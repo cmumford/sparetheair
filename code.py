@@ -5,6 +5,25 @@ from PIL import Image, ImageDraw, ImageFont
 # apt-get install python3-feedparser
 import feedparser
 
+draw_borders = False
+alert_url = 'http://www.baaqmd.gov/Feeds/AlertRSS.aspx'
+forecast_url= 'http://www.baaqmd.gov/Feeds/AirForecastRSS.aspx'
+
+image_size = (264, 176)
+image_rect = (0, 0, image_size[0]-1, image_size[1]-1)
+today_rect = (0, 0, image_rect[2], 88)
+forecast_width = int(image_size[0] / 4)
+forecast_rects = [
+    (0 * forecast_width, today_rect[3], 1 * forecast_width, image_rect[3]),
+    (1 * forecast_width, today_rect[3], 2 * forecast_width, image_rect[3]),
+    (2 * forecast_width, today_rect[3], 3 * forecast_width, image_rect[3]),
+    (3 * forecast_width, today_rect[3], image_rect[2], image_rect[3]),
+]
+black = (0, 0, 0, 255)
+white = (255, 255, 255, 255)
+red = (255, 0, 0, 255)
+blue = (0, 0, 255, 255)
+
 def IsAlert(rss_entry):
     return rss_entry.summary == 'Alert In Effect'
 
@@ -73,7 +92,8 @@ def GetValue(text, valname):
     return None
 
 def DrawTodayEntry(rss_entry, ctx):
-    ctx.rectangle(today_rect, fill=None, outline=blue)
+    if draw_borders:
+        ctx.rectangle(today_rect, fill=None, outline=blue)
     margin = 4
     ctx.text((margin,margin), GetEntryDate(rss_entry),
             font=large_font, fill=black)
@@ -111,7 +131,8 @@ def ParseSummary(rss_entry):
 
 def DrawForecast(rss_entry, entry_idx, ctx):
     bounds = forecast_rects[entry_idx]
-    ctx.rectangle(bounds, fill=None, outline=blue)
+    if draw_borders:
+        ctx.rectangle(bounds, fill=None, outline=blue)
     margin = 4
     ctx.text((margin + bounds[0], margin + bounds[1]),
             GetEntryDateAbbrev(rss_entry),
@@ -125,6 +146,11 @@ def DrawForecast(rss_entry, entry_idx, ctx):
               margin+bounds[1] + line_height),
               aqi, font=forecast_font, fill=black)
 
+def DrawForecastLines(ctx):
+    ctx.line(((0, today_rect[3]), (today_rect[2], today_rect[3])), fill=black)
+    for r in forecast_rects[:-1]:
+        ctx.line(((r[2], r[1]), (r[2], r[3])), fill=black)
+
 def DrawForecasts(rss_entries, ctx):
     """The first "forecast" is today, so ignore it."""
     num_forecasts = min(4, len(rss_entries))
@@ -136,27 +162,11 @@ def DrawLogo(img):
     offset=(image_size[0] - 80 - 2, 4)
     img.paste(logo, offset)
 
-alert_url = 'http://www.baaqmd.gov/Feeds/AlertRSS.aspx'
-forecast_url= 'http://www.baaqmd.gov/Feeds/AirForecastRSS.aspx'
 alert_feed = feedparser.parse(alert_url)
 # Uncomment for testing.
 #alert_feed.entries[0].summary = 'Alert In Effect'
 forecast_feed = feedparser.parse(forecast_url)
 
-image_size = (264, 176)
-image_rect = (0, 0, image_size[0]-1, image_size[1]-1)
-today_rect = (0, 0, image_rect[2], 88)
-forecast_width = int(image_size[0] / 4)
-forecast_rects = [
-    (0 * forecast_width, today_rect[3], 1 * forecast_width, image_rect[3]),
-    (1 * forecast_width, today_rect[3], 2 * forecast_width, image_rect[3]),
-    (2 * forecast_width, today_rect[3], 3 * forecast_width, image_rect[3]),
-    (3 * forecast_width, today_rect[3], image_rect[2], image_rect[3]),
-]
-black = (0, 0, 0, 255)
-white = (255, 255, 255, 255)
-red = (255, 0, 0, 255)
-blue = (0, 0, 255, 255)
 large_font = ImageFont.truetype("fonts/windows_command_prompt.ttf", 16)
 medium_font = ImageFont.truetype("fonts/windows_command_prompt.ttf", 16)
 status_font_size = 22 if IsAlert(alert_feed.entries[0]) else 28
@@ -173,6 +183,7 @@ ctx.rectangle(image_rect, white);
 
 DrawLogo(img)
 DrawTodayEntry(alert_feed.entries[0], ctx)
+DrawForecastLines(ctx)
 DrawForecasts(forecast_feed.entries, ctx)
 
 # May require ImageMagick (varies by platform).
