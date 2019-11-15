@@ -148,6 +148,11 @@ def DrawForecasts(rss_entries, ctx):
     for idx in range(num_forecasts):
         DrawForecast(rss_entries[idx+1], idx, ctx)
 
+def DrawLogo(img):
+    logo=Image.open('winter_logo.png')
+    offset=(image_size[0] - 80 - 2, 4)
+    img.paste(logo, offset)
+
 img = Image.new('RGB', image_size)
 ctx = ImageDraw.Draw(img)
 ctx.fontmode = "1"
@@ -157,6 +162,7 @@ ctx.rectangle(image_rect, white);
 
 entry = alert_feed.entries[0]
 DrawTodayEntry(entry, ctx)
+DrawLogo(img)
 DrawForecasts(forecast_feed.entries, ctx)
 
 # May require ImageMagick (varies by platform).
