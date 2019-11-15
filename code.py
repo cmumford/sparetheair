@@ -5,28 +5,6 @@ from PIL import Image, ImageDraw, ImageFont
 # apt-get install python3-feedparser
 import feedparser
 
-alert_url = 'http://www.baaqmd.gov/Feeds/AlertRSS.aspx'
-forecast_url= 'http://www.baaqmd.gov/Feeds/AirForecastRSS.aspx'
-alert_feed = feedparser.parse(alert_url)
-forecast_feed = feedparser.parse(forecast_url)
-
-image_size = (264, 176)
-image_rect = (0, 0, image_size[0]-1, image_size[1]-1)
-today_rect = (0, 0, image_rect[2], 88)
-forecast_width = int(image_size[0] / 4)
-forecast_rects = [
-    (0 * forecast_width, today_rect[3], 1 * forecast_width, image_rect[3]),
-    (1 * forecast_width, today_rect[3], 2 * forecast_width, image_rect[3]),
-    (2 * forecast_width, today_rect[3], 3 * forecast_width, image_rect[3]),
-    (3 * forecast_width, today_rect[3], image_rect[2], image_rect[3]),
-]
-black = (0, 0, 0, 255)
-white = (255, 255, 255, 255)
-red = (255, 0, 0, 255)
-blue = (0, 0, 255, 255)
-large_font = ImageFont.truetype("fonts/windows_command_prompt.ttf", 16)
-medium_font = ImageFont.truetype("fonts/windows_command_prompt.ttf", 16)
-
 def IsAlert(rss_entry):
     return rss_entry.summary == 'Alert In Effect'
 
@@ -100,8 +78,8 @@ def DrawTodayEntry(rss_entry, ctx):
     ctx.text((margin,margin), GetEntryDate(rss_entry),
             font=large_font, fill=black)
     alert_color = red if IsAlert(rss_entry) else black
-    ctx.text((margin, 60), GetAlertText(rss_entry),
-            font=large_font, fill=alert_color)
+    ctx.text((margin + 8, 50), GetAlertText(rss_entry),
+            font=status_font, fill=alert_color)
 
 def ParseSummary(rss_entry):
     districts = dict()
@@ -138,12 +116,14 @@ def DrawForecast(rss_entry, entry_idx, ctx):
     ctx.text((margin + bounds[0], margin + bounds[1]),
             GetEntryDateAbbrev(rss_entry),
     font=medium_font, fill=black)
-    line_height = 20
+    line_height = 14
     districts = ParseSummary(rss_entry)
     my_district = districts['Santa Clara Valley']
     aqi = my_district['AQI disp']
-    ctx.text((margin+bounds[0], margin+bounds[1] + line_height),
-             'AQI: ' + aqi, font=medium_font, fill=black)
+    hoffset = 14
+    ctx.text((margin+hoffset+bounds[0],
+              margin+bounds[1] + line_height),
+              aqi, font=forecast_font, fill=black)
 
 def DrawForecasts(rss_entries, ctx):
     """The first "forecast" is today, so ignore it."""
@@ -155,6 +135,34 @@ def DrawLogo(img):
     logo=Image.open('winter_logo.png')
     offset=(image_size[0] - 80 - 2, 4)
     img.paste(logo, offset)
+
+alert_url = 'http://www.baaqmd.gov/Feeds/AlertRSS.aspx'
+forecast_url= 'http://www.baaqmd.gov/Feeds/AirForecastRSS.aspx'
+alert_feed = feedparser.parse(alert_url)
+# Uncomment for testing.
+#alert_feed.entries[0].summary = 'Alert In Effect'
+forecast_feed = feedparser.parse(forecast_url)
+
+image_size = (264, 176)
+image_rect = (0, 0, image_size[0]-1, image_size[1]-1)
+today_rect = (0, 0, image_rect[2], 88)
+forecast_width = int(image_size[0] / 4)
+forecast_rects = [
+    (0 * forecast_width, today_rect[3], 1 * forecast_width, image_rect[3]),
+    (1 * forecast_width, today_rect[3], 2 * forecast_width, image_rect[3]),
+    (2 * forecast_width, today_rect[3], 3 * forecast_width, image_rect[3]),
+    (3 * forecast_width, today_rect[3], image_rect[2], image_rect[3]),
+]
+black = (0, 0, 0, 255)
+white = (255, 255, 255, 255)
+red = (255, 0, 0, 255)
+blue = (0, 0, 255, 255)
+large_font = ImageFont.truetype("fonts/windows_command_prompt.ttf", 16)
+medium_font = ImageFont.truetype("fonts/windows_command_prompt.ttf", 16)
+status_font_size = 22 if IsAlert(alert_feed.entries[0]) else 28
+status_font = ImageFont.truetype("fonts/LibreBaskerville-Bold.ttf",
+                                 status_font_size)
+forecast_font = ImageFont.truetype("fonts/LibreBaskerville-Bold.ttf", 28)
 
 img = Image.new('RGB', image_size)
 ctx = ImageDraw.Draw(img)
