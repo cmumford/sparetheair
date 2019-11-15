@@ -28,13 +28,13 @@ large_font = ImageFont.truetype("windows_command_prompt.ttf", 16)
 medium_font = ImageFont.truetype("windows_command_prompt.ttf", 16)
 
 def IsAlert(rss_entry):
-    return entry.summary == 'Alert In Effect'
+    return rss_entry.summary == 'Alert In Effect'
 
 def GetAlertText(rss_entry):
-    return entry.summary
+    return rss_entry.summary
 
 def GetEntryDate(rss_entry):
-    return entry.updated
+    return rss_entry.updated
 
 def GetEntryDateAbbrev(rss_entry):
     prefix = 'BAAQMD Air Quality Forecast for '
@@ -96,9 +96,9 @@ def GetValue(text, valname):
 
 def DrawTodayEntry(rss_entry, ctx):
     ctx.rectangle(today_rect, fill=white, outline=blue)
-    ctx.text((10,10), GetEntryDate(entry), font=large_font, fill=black)
-    alert_color = red if IsAlert(entry) else black
-    ctx.text((10,60), GetAlertText(entry), font=large_font, fill=alert_color)
+    ctx.text((10,10), GetEntryDate(rss_entry), font=large_font, fill=black)
+    alert_color = red if IsAlert(rss_entry) else black
+    ctx.text((10,60), GetAlertText(rss_entry), font=large_font, fill=alert_color)
 
 def ParseSummary(rss_entry):
     districts = dict()
@@ -160,8 +160,8 @@ ctx.fontmode = "1"
 # Clear context.
 ctx.rectangle(image_rect, white);
 
-entry = alert_feed.entries[0]
-DrawTodayEntry(entry, ctx)
+today = alert_feed.entries[0]
+DrawTodayEntry(today, ctx)
 DrawLogo(img)
 DrawForecasts(forecast_feed.entries, ctx)
 
