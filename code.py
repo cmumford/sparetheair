@@ -24,7 +24,8 @@ black = (0, 0, 0, 255)
 white = (255, 255, 255, 255)
 red = (255, 0, 0, 255)
 blue = (0, 0, 255, 255)
-large_font = ImageFont.load_default().font
+large_font = ImageFont.truetype("windows_command_prompt.ttf", 16)
+medium_font = ImageFont.truetype("windows_command_prompt.ttf", 16)
 
 def IsAlert(rss_entry):
     return entry.summary == 'Alert In Effect'
@@ -130,14 +131,16 @@ def ParseSummary(rss_entry):
 def DrawForecast(rss_entry, entry_idx, ctx):
     bounds = forecast_rects[entry_idx]
     ctx.rectangle(bounds, fill=white, outline=blue)
-    ctx.text((bounds[0], bounds[1]), GetEntryDateAbbrev(rss_entry),
-    font=large_font, fill=black)
+    margin = 4
+    ctx.text((margin + bounds[0], margin + bounds[1]),
+            GetEntryDateAbbrev(rss_entry),
+    font=medium_font, fill=black)
     line_height = 20
     districts = ParseSummary(rss_entry)
     my_district = districts['Santa Clara Valley']
     aqi = my_district['AQI disp']
-    ctx.text((bounds[0], bounds[1] + line_height),
-             'AQI: ' + aqi, font=large_font, fill=black)
+    ctx.text((margin+bounds[0], margin+bounds[1] + line_height),
+             'AQI: ' + aqi, font=medium_font, fill=black)
 
 def DrawForecasts(rss_entries, ctx):
     """The first "forecast" is today, so ignore it."""
@@ -147,6 +150,7 @@ def DrawForecasts(rss_entries, ctx):
 
 img = Image.new('RGB', image_size)
 ctx = ImageDraw.Draw(img)
+ctx.fontmode = "1"
 
 # Clear context.
 ctx.rectangle(image_rect, white);
