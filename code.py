@@ -24,8 +24,8 @@ black = (0, 0, 0, 255)
 white = (255, 255, 255, 255)
 red = (255, 0, 0, 255)
 blue = (0, 0, 255, 255)
-large_font = ImageFont.truetype("windows_command_prompt.ttf", 16)
-medium_font = ImageFont.truetype("windows_command_prompt.ttf", 16)
+large_font = ImageFont.truetype("fonts/windows_command_prompt.ttf", 16)
+medium_font = ImageFont.truetype("fonts/windows_command_prompt.ttf", 16)
 
 def IsAlert(rss_entry):
     return rss_entry.summary == 'Alert In Effect'
