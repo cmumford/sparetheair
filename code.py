@@ -95,7 +95,7 @@ def GetValue(text, valname):
     return None
 
 def DrawTodayEntry(rss_entry, ctx):
-    ctx.rectangle(today_rect, fill=white, outline=blue)
+    ctx.rectangle(today_rect, fill=None, outline=blue)
     margin = 4
     ctx.text((margin,margin), GetEntryDate(rss_entry),
             font=large_font, fill=black)
@@ -133,7 +133,7 @@ def ParseSummary(rss_entry):
 
 def DrawForecast(rss_entry, entry_idx, ctx):
     bounds = forecast_rects[entry_idx]
-    ctx.rectangle(bounds, fill=white, outline=blue)
+    ctx.rectangle(bounds, fill=None, outline=blue)
     margin = 4
     ctx.text((margin + bounds[0], margin + bounds[1]),
             GetEntryDateAbbrev(rss_entry),
@@ -163,9 +163,8 @@ ctx.fontmode = "1"
 # Clear context.
 ctx.rectangle(image_rect, white);
 
-today = alert_feed.entries[0]
-DrawTodayEntry(today, ctx)
 DrawLogo(img)
+DrawTodayEntry(alert_feed.entries[0], ctx)
 DrawForecasts(forecast_feed.entries, ctx)
 
 # May require ImageMagick (varies by platform).
