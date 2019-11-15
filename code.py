@@ -132,7 +132,7 @@ def DrawForecasts(rss_entries, ctx):
         DrawForecast(rss_entries[idx+1], idx, ctx)
 
 def DrawLogo(img):
-    logo=Image.open('winter_logo.png')
+    logo=Image.open('images/winter_logo.png')
     offset=(image_size[0] - 80 - 2, 4)
     img.paste(logo, offset)
 
