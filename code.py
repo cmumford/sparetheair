@@ -96,9 +96,12 @@ def GetValue(text, valname):
 
 def DrawTodayEntry(rss_entry, ctx):
     ctx.rectangle(today_rect, fill=white, outline=blue)
-    ctx.text((10,10), GetEntryDate(rss_entry), font=large_font, fill=black)
+    margin = 4
+    ctx.text((margin,margin), GetEntryDate(rss_entry),
+            font=large_font, fill=black)
     alert_color = red if IsAlert(rss_entry) else black
-    ctx.text((10,60), GetAlertText(rss_entry), font=large_font, fill=alert_color)
+    ctx.text((margin, 60), GetAlertText(rss_entry),
+            font=large_font, fill=alert_color)
 
 def ParseSummary(rss_entry):
     districts = dict()
