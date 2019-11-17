@@ -23,6 +23,7 @@ black = (0, 0, 0, 255)
 white = (255, 255, 255, 255)
 red = (255, 0, 0, 255)
 blue = (0, 0, 255, 255)
+num_aqi_categories = 6
 
 def IsAlert(rss_entry):
     return rss_entry.summary == 'Alert In Effect'
@@ -91,6 +92,16 @@ def GetValue(text, valname):
         return text[idx + len(find_str):endidx]
     return None
 
+def DrawScale(ctx, tl, rss_entry):
+    """Draw the AQI scale and where |rss_entry| is on that scale."""
+    rect_size = 10
+    bounds = (tl, (tl[0] + rect_size, tl[1] + num_aqi_categories * rect_size))
+    ctx.rectangle(bounds, fill=None, outline=black)
+    for i in range(num_aqi_categories):
+        x = tl[0]
+        y = tl[1] + i * rect_size
+        ctx.line(((x, y), (x + rect_size, y)), fill=black)
+
 def DrawTodayEntry(rss_entry, ctx):
     if draw_borders:
         ctx.rectangle(today_rect, fill=None, outline=blue)
@@ -145,6 +156,7 @@ def DrawForecast(rss_entry, entry_idx, ctx):
     ctx.text((margin+hoffset+bounds[0],
               margin+bounds[1] + line_height),
               aqi, font=forecast_font, fill=black)
+    DrawScale(ctx, (bounds[2]-16, bounds[1] + 22), rss_entry)
 
 def DrawForecastLines(ctx):
     ctx.line(((0, today_rect[3]), (today_rect[2], today_rect[3])), fill=black)
@@ -187,6 +199,6 @@ DrawForecastLines(ctx)
 DrawForecasts(forecast_feed.entries[1:], ctx)
 
 # May require ImageMagick (varies by platform).
-mult = 4
+mult = 2
 disp = img.resize((mult * image_size[0], mult * image_size[1]))
 disp.show("Spare the Air")
