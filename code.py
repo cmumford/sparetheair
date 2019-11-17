@@ -12,7 +12,7 @@ forecast_url= 'http://www.baaqmd.gov/Feeds/AirForecastRSS.aspx'
 image_size = (264, 176)
 image_rect = (0, 0, image_size[0]-1, image_size[1]-1)
 today_rect = (0, 0, image_rect[2], 88)
-forecast_width = int(image_size[0] / 4)
+forecast_width = int(image_size[0] / 3)
 forecast_rects = [
     (0 * forecast_width, today_rect[3], 1 * forecast_width, image_rect[3]),
     (1 * forecast_width, today_rect[3], 2 * forecast_width, image_rect[3]),
@@ -153,7 +153,7 @@ def DrawForecastLines(ctx):
 
 def DrawForecasts(rss_entries, ctx):
     """The first "forecast" is today, so ignore it."""
-    num_forecasts = min(4, len(rss_entries))
+    num_forecasts = min(3, len(rss_entries))
     for idx in range(num_forecasts):
         DrawForecast(rss_entries[idx+1], idx, ctx)
 
@@ -184,7 +184,7 @@ ctx.rectangle(image_rect, white);
 DrawLogo(img)
 DrawTodayEntry(alert_feed.entries[0], ctx)
 DrawForecastLines(ctx)
-DrawForecasts(forecast_feed.entries, ctx)
+DrawForecasts(forecast_feed.entries[1:], ctx)
 
 # May require ImageMagick (varies by platform).
 mult = 4
