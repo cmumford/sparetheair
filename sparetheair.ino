@@ -1,4 +1,5 @@
 #include <HTTPClient.h>
+#include <TinyXML.h>
 #include <WiFi.h>
 
 #include "secrets.h"
@@ -56,32 +57,48 @@ struct HttpFetchResult {
   String response;
 };
 
+struct RegionValues {
+  String name;
+  String aqi;
+  String pollutant;
+};
+
 const char* kAlertUrl = "http://www.baaqmd.gov/Feeds/AlertRSS.aspx";
 const char* kForecastUrl = "http://www.baaqmd.gov/Feeds/AirForecastRSS.aspx";
 const Size kEPaperSize = {264, 176};
+const int kNumForecastDays = 4;
 const Rectangle kEPaperBounds = {
     Point({0, 0}), Point({kEPaperSize.width - 1, kEPaperSize.height - 1})};
 const Rectangle kTodayBounds = {Point({0, 0}),
                                 Point({kEPaperBounds.right(), 88})};
 const int kForecastWidth = kEPaperSize.width / 3;
-// There are 3 forecast sections so 2 dividers between them.
-const int kDividers[2] = {
-    kEPaperSize.width * 1 / 3,
-    kEPaperSize.width * 2 / 3,
+// There are 4 forecast sections so 3 dividers between them.
+const int kDividers[kNumForecastDays - 1] = {
+    kEPaperSize.width * 1 / 4,
+    kEPaperSize.width * 2 / 4,
+    kEPaperSize.width * 3 / 4,
 };
-const Rectangle kForecastBounds[3] = {
+const Rectangle kForecastBounds[kNumForecastDays] = {
     {Point({0 * kForecastWidth, kTodayBounds.bottom()}),
      Point({kDividers[0] - 1, kEPaperBounds.bottom()})},
     {Point({kDividers[0], kTodayBounds.bottom()}),
      Point({kDividers[1] - 1, kEPaperBounds.bottom()})},
     {Point({kDividers[1], kTodayBounds.bottom()}),
+     Point({kDividers[2] - 1, kEPaperBounds.bottom()})},
+    {Point({kDividers[2], kTodayBounds.bottom()}),
      Point({kEPaperBounds.right(), kEPaperBounds.bottom()})},
 };
-char WiFiSSID[] = SECRET_SSID;
-char WiFiPassword[] = SECRET_WIFI_PASSWORD;
+char kWiFiSSID[] = SECRET_SSID;
+char kWiFiPassword[] = SECRET_WIFI_PASSWORD;
 
 // The blue LED pin.
 const int kLEDPin = 2;
+
+uint8_t g_xml_parse_buffer[512];
+int g_parse_forecast_idx = 0;
+const int kMaxNumEntries = 1 + kNumForecastDays;
+// The first one is today.
+Status g_forecasts[kMaxNumEntries];
 
 HttpFetchResult DoHTTPGet(const char* url) {
   HttpFetchResult result;
@@ -93,16 +110,70 @@ HttpFetchResult DoHTTPGet(const char* url) {
   return result;
 }
 
-void ParseStatusString(const String& str, Status* status) {
-  
+void XML_Alertcallback(uint8_t status_flags,
+                       char* tag_name,
+                       uint16_t tag_name_len,
+                       char* data,
+                       uint16_t data_len) {
+  // Serial.printf("Callback on tag %s\n", tag_name);
+  if (!(status_flags & STATUS_TAG_TEXT))
+    return;
+  if (!strcasecmp(tag_name, "/rss/channel/item/date")) {
+    g_forecasts[0].date_full = data;
+  } else if (!strcasecmp(tag_name, "/rss/channel/item/description")) {
+    g_forecasts[0].alert_status = data;
+  }
 }
 
-Status FetchAlert() {
-  Status status;
+int FetchAlert() {
   HttpFetchResult result = DoHTTPGet(kAlertUrl);
-  if (result.httpCode == HTTP_CODE_OK)
-    ParseStatusString(result.response, &status);
-  return status;
+  if (result.httpCode != HTTP_CODE_OK)
+    return result.httpCode;
+
+  TinyXML xml;
+  xml.init((uint8_t*)g_xml_parse_buffer, sizeof(g_xml_parse_buffer),
+           &XML_Alertcallback);
+  for (size_t i = 0; i < result.response.length(); i++) {
+    xml.processChar(result.response[i]);
+  }
+
+  int idx = g_forecasts[0].date_full.indexOf(',');
+  if (idx > 0)
+    g_forecasts[0].day_of_week = g_forecasts[0].date_full.substring(0, idx);
+  return HTTP_CODE_OK;
+}
+
+void XML_ForecastCallback(uint8_t status_flags,
+                          char* tag_name,
+                          uint16_t tag_name_len,
+                          char* data,
+                          uint16_t data_len) {
+  Serial.printf("Callback on tag %s\n", tag_name);
+  if ((status_flags & STATUS_TAG_TEXT) && !strcasecmp(tag_name, "/rss/channel/item")) {
+    g_parse_forecast_idx++;
+  }
+  if (!(status_flags & STATUS_TAG_TEXT))
+    return;
+  if (g_parse_forecast_idx >= kMaxNumEntries)
+    return;
+  if (!strcasecmp(tag_name, "/rss/channel/item/title")) {
+    g_forecasts[g_parse_forecast_idx].date_full = data;
+  }
+}
+
+int FetchForecast() {
+  HttpFetchResult result = DoHTTPGet(kForecastUrl);
+  if (result.httpCode != HTTP_CODE_OK)
+    return result.httpCode;
+
+  TinyXML xml;
+  xml.init((uint8_t*)g_xml_parse_buffer, sizeof(g_xml_parse_buffer),
+           &XML_ForecastCallback);
+  for (size_t i = 0; i < result.response.length(); i++) {
+    xml.processChar(result.response[i]);
+  }
+
+  return HTTP_CODE_OK;
 }
 
 }  // namespace
@@ -110,26 +181,25 @@ Status FetchAlert() {
 void setup() {
   Serial.begin(115200);
   pinMode(kLEDPin, OUTPUT);
-  Serial.printf("In setup");
 
-  Serial.printf("Connecting to %s\n", WiFiSSID);
-  WiFi.begin(WiFiSSID, WiFiPassword);
+  Serial.printf("Connecting to %s\n", kWiFiSSID);
+  WiFi.begin(kWiFiSSID, kWiFiPassword);
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.println("Connecting to WiFi..");
   }
 
-  Serial.printf("Connected to %s\n", WiFiSSID);
+  Serial.printf("Connected to %s\n", kWiFiSSID);
 }
 
 void loop() {
-  Status alert = FetchAlert();
-  Serial.println("Connecting to WiFi..");
+  int status = FetchAlert();
+  status = FetchForecast();
 
   int i = 0;
   while (true) {
-    Serial.printf("Message %d\n", i++);
+    // Serial.printf("Message %d\n", i++);
     digitalWrite(kLEDPin, HIGH);
     delay(500);
     digitalWrite(kLEDPin, LOW);
