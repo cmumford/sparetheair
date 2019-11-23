@@ -34,8 +34,7 @@ const Rectangle kTodayBounds = {Point({0, 0}),
 const int kForecastWidth = kEPaperSize.width / 3;
 // There are 4 forecast sections so 3 dividers between them.
 const int kDividers[sta::kNumForecastDays - 1] = {
-    kEPaperSize.width * 1 / 4,
-    kEPaperSize.width * 2 / 4,
+    kEPaperSize.width * 1 / 4, kEPaperSize.width * 2 / 4,
     kEPaperSize.width * 3 / 4,
 };
 const Rectangle kForecastBounds[sta::kNumForecastDays] = {
@@ -82,9 +81,7 @@ int DisconnectWiFi() {
   WiFi.end();
 }
 
-void DrawStatus() {
-  
-}
+void DrawStatus() {}
 
 int FetchStatus() {
   Serial.println("Fetching Status");
