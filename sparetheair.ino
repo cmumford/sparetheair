@@ -60,25 +60,30 @@ void setup() {
   pinMode(kLEDPin, OUTPUT);
 }
 
+// Connect to WiFi. Will flash the LED while waiting to connect.
+// Return a WiFi.status() value where WL_CONNECTED indicates
+// a successful connection to the WiFi network.
 int ConnectWiFi() {
   Serial.printf("Connecting to %s\n", kWiFiSSID);
   WiFi.begin(kWiFiSSID, kWiFiPassword);
 
   int led_state = HIGH;
   digitalWrite(kLEDPin, led_state);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.println(" waiting for wifi connect..");
+  const int kAttemptSeconds = 10;
+  const int kNumWaits = kAttemptSeconds * 4; // 250 msec sleeps.
+  for (int i = 0; i < kNumWaits && WiFi.status() != WL_CONNECTED; i++ ) {
+    delay(250);
     led_state = led_state == HIGH ? LOW : HIGH;
     digitalWrite(kLEDPin, led_state);
   }
   Serial.printf("Connected to %s\n", kWiFiSSID);
 
-  return 0;
+  return WiFi.status();
 }
 
 int DisconnectWiFi() {
-  WiFi.end();
+  // Can this be implemented?
+  // WiFi.end();
 }
 
 void DrawStatus() {}
@@ -87,7 +92,7 @@ int FetchStatus() {
   Serial.println("Fetching Status");
   digitalWrite(kLEDPin, HIGH);
   int err = ConnectWiFi();
-  if (!err) {
+  if (err != WL_CONNECTED) {
     digitalWrite(kLEDPin, LOW);
     Serial.printf("Error %d connecting to WiFi\n", err);
     return err;
