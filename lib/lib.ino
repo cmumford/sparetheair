@@ -121,6 +121,21 @@ test(parseAlert) {
   assertEqual(today.alert_status, "No Alert");
   assertEqual(today.date_full, "Saturday, November 23, 2019");
   assertEqual(today.day_of_week, "Saturday");
+  // The following values only come from the forecast.
+  assertEqual(today.aqi_val, 0);
+  assertEqual(today.aqi_name, "");
+  assertEqual(today.pollutant, "");
+}
+
+test(parseForecast) {
+  SpareTheAir::ResetForTest();
+  SpareTheAir::ParseForecast(forecast);
+
+  const Status& tomorrow = SpareTheAir::status(1);
+  assertEqual(today.alert_status, "No Alert");
+  assertEqual(today.date_full, "Saturday, November 23, 2019");
+  assertEqual(today.day_of_week, "Saturday");
+  // The following values only come from the forecast.
   assertEqual(today.aqi_val, 0);
   assertEqual(today.aqi_name, "");
   assertEqual(today.pollutant, "");
