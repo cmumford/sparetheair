@@ -29,6 +29,7 @@ struct Status {
   String pollutant;
 
   bool AlertInEffect() const { return alert_status == "Alert In Effect"; }
+  void ResetForTest();
 };
 
 struct RegionValues {
@@ -46,9 +47,15 @@ class SpareTheAir {
   SpareTheAir() = delete;
   ~SpareTheAir() = delete;
 
- private:
+  static const Status& status(int idx);
+
+ public:
+  static String ExtractDayOfWeek(const String& date_full);
   static int FetchAlert();
   static int FetchForecast();
+  static void ParseAlert(const String& xmlString);
+  static void ParseForecast(const String& xmlString);
+  static void ResetForTest();
 };
 
 }  // namespace sta

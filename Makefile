@@ -17,6 +17,7 @@ clean:
 
 .PHONY: format
 format:
-	${CLANG_FORMAT} -i sparetheair.cpp
-	${CLANG_FORMAT} -i sparetheair.h
+	${CLANG_FORMAT} -i lib/lib.ino
+	${CLANG_FORMAT} -i lib/sparetheair.cpp
+	${CLANG_FORMAT} -i lib/sparetheair.h
 	${CLANG_FORMAT} -i sparetheair.ino

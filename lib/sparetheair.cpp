@@ -66,6 +66,11 @@ void XML_ForecastCallback(uint8_t status_flags,
 }  // namespace
 
 // static
+void Status::ResetForTest() {
+  *this = Status();
+}
+
+// static
 int SpareTheAir::Fetch() {
   int err = FetchAlert();
   int ferr = FetchForecast();
@@ -79,17 +84,20 @@ int SpareTheAir::FetchAlert() {
   if (result.httpCode != HTTP_CODE_OK)
     return result.httpCode;
 
+  ParseAlert(result.response);
+  return HTTP_CODE_OK;
+}
+
+// static
+void SpareTheAir::ParseAlert(const String& xmlString) {
   TinyXML xml;
   xml.init((uint8_t*)g_xml_parse_buffer, sizeof(g_xml_parse_buffer),
            &XML_Alertcallback);
-  for (size_t i = 0; i < result.response.length(); i++) {
-    xml.processChar(result.response[i]);
+  for (size_t i = 0; i < xmlString.length(); i++) {
+    xml.processChar(xmlString[i]);
   }
 
-  int idx = g_forecasts[0].date_full.indexOf(',');
-  if (idx > 0)
-    g_forecasts[0].day_of_week = g_forecasts[0].date_full.substring(0, idx);
-  return HTTP_CODE_OK;
+  g_forecasts[0].day_of_week = ExtractDayOfWeek(g_forecasts[0].date_full);
 }
 
 // static
@@ -98,14 +106,36 @@ int SpareTheAir::FetchForecast() {
   if (result.httpCode != HTTP_CODE_OK)
     return result.httpCode;
 
+  ParseForecast(result.response);
+  return HTTP_CODE_OK;
+}
+
+// static
+void SpareTheAir::ParseForecast(const String& xmlString) {
   TinyXML xml;
   xml.init((uint8_t*)g_xml_parse_buffer, sizeof(g_xml_parse_buffer),
            &XML_ForecastCallback);
-  for (size_t i = 0; i < result.response.length(); i++) {
-    xml.processChar(result.response[i]);
+  for (size_t i = 0; i < xmlString.length(); i++) {
+    xml.processChar(xmlString[i]);
   }
+}
 
-  return HTTP_CODE_OK;
+// static
+String SpareTheAir::ExtractDayOfWeek(const String& date_full) {
+  int idx = date_full.indexOf(',');
+  if (idx <= 0)
+    return String();
+  return date_full.substring(0, idx);
+}
+
+// static
+const Status& SpareTheAir::status(int idx) {
+  return g_forecasts[idx];
+}
+
+void SpareTheAir::ResetForTest() {
+  for (int i = 0; i < kMaxNumEntries; i++)
+    g_forecasts[i].ResetForTest();
 }
 
 }  // namespace sta

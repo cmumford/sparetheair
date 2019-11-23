@@ -1,7 +1,8 @@
 #include <WiFi.h>
 
+#include "lib/sparetheair.cpp"
+#include "lib/sparetheair.h"
 #include "secrets.h"
-#include "sparetheair.h"
 
 using sta::SpareTheAir;
 
@@ -70,8 +71,8 @@ int ConnectWiFi() {
   int led_state = HIGH;
   digitalWrite(kLEDPin, led_state);
   const int kAttemptSeconds = 10;
-  const int kNumWaits = kAttemptSeconds * 4; // 250 msec sleeps.
-  for (int i = 0; i < kNumWaits && WiFi.status() != WL_CONNECTED; i++ ) {
+  const int kNumWaits = kAttemptSeconds * 4;  // 250 msec sleeps.
+  for (int i = 0; i < kNumWaits && WiFi.status() != WL_CONNECTED; i++) {
     delay(250);
     led_state = led_state == HIGH ? LOW : HIGH;
     digitalWrite(kLEDPin, led_state);
