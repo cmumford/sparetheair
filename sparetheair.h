@@ -3,7 +3,7 @@
 
 namespace sta {
 
-// Status for a given date. This may be the current status
+// Status for a date. This may be the current status
 // or a forecast.
 struct Status {
   // The alert status (e.g. "No Alert" or "Alert In Effect").
@@ -42,15 +42,15 @@ const int kNumForecastDays = 4;
 class SpareTheAir {
  public:
   static int Fetch();
- 
+
   SpareTheAir() = delete;
   ~SpareTheAir() = delete;
 
- private:  
+ private:
   static int FetchAlert();
   static int FetchForecast();
 };
 
 }  // namespace sta
 
-#endif // _SPARETHEAIR_H_
+#endif  // _SPARETHEAIR_H_

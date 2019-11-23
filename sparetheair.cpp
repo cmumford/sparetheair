@@ -8,7 +8,8 @@ namespace sta {
 namespace {
 
 struct HttpFetchResult {
-  int httpCode;  String response;
+  int httpCode;
+  String response;
 };
 
 const char* kAlertUrl = "http://www.baaqmd.gov/Feeds/AlertRSS.aspx";
@@ -49,7 +50,8 @@ void XML_ForecastCallback(uint8_t status_flags,
                           uint16_t tag_name_len,
                           char* data,
                           uint16_t data_len) {
-  if ((status_flags & STATUS_TAG_TEXT) && !strcasecmp(tag_name, "/rss/channel/item")) {
+  if ((status_flags & STATUS_TAG_TEXT) &&
+      !strcasecmp(tag_name, "/rss/channel/item")) {
     g_parse_forecast_idx++;
   }
   if (!(status_flags & STATUS_TAG_TEXT))

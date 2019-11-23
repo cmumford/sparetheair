@@ -59,27 +59,55 @@ const int kLEDPin = 2;
 void setup() {
   Serial.begin(115200);
   pinMode(kLEDPin, OUTPUT);
+}
 
+int ConnectWiFi() {
   Serial.printf("Connecting to %s\n", kWiFiSSID);
   WiFi.begin(kWiFiSSID, kWiFiPassword);
 
+  int led_state = HIGH;
+  digitalWrite(kLEDPin, led_state);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.println(" waiting for wifi connect..");
+    led_state = led_state == HIGH ? LOW : HIGH;
+    digitalWrite(kLEDPin, led_state);
   }
-
   Serial.printf("Connected to %s\n", kWiFiSSID);
+
+  return 0;
+}
+
+int DisconnectWiFi() {
+  WiFi.end();
+}
+
+void DrawStatus() {
+  
+}
+
+int FetchStatus() {
+  Serial.println("Fetching Status");
+  digitalWrite(kLEDPin, HIGH);
+  int err = ConnectWiFi();
+  if (!err) {
+    digitalWrite(kLEDPin, LOW);
+    Serial.printf("Error %d connecting to WiFi\n", err);
+    return err;
+  }
+  digitalWrite(kLEDPin, HIGH);
+  err = SpareTheAir::Fetch();
+  DisconnectWiFi();
+  DrawStatus();
+  Serial.println("Successfully refreshed status");
+  digitalWrite(kLEDPin, LOW);
+  return 0;
 }
 
 void loop() {
-  int status = SpareTheAir::Fetch();
-
-  int i = 0;
   while (true) {
-    // Serial.printf("Message %d\n", i++);
-    digitalWrite(kLEDPin, HIGH);
-    delay(500);
-    digitalWrite(kLEDPin, LOW);
-    delay(500);
+    FetchStatus();
+    // Sleep one hour.
+    delay(3600 * 1000);
   }
 }

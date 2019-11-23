@@ -17,5 +17,5 @@ clean:
 
 .PHONY: format
 format:
-	${CLANG-FORMAT} --style=Chromium -i sparetheair.cpp
-	${CLANG-FORMAT} --style=Chromium -i sparetheair.h
+	${CLANG_FORMAT} --style=Chromium -i sparetheair.cpp
+	${CLANG_FORMAT} --style=Chromium -i sparetheair.h
