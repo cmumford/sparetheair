@@ -41,13 +41,16 @@ const int kNumForecastDays = 4;
 
 class SpareTheAir {
  public:
-  int Fetch();
+  static int Fetch();
+ 
+  SpareTheAir() = delete;
+  ~SpareTheAir() = delete;
 
- private:
-  int FetchAlert();
-  int FetchForecast();
+ private:  
+  static int FetchAlert();
+  static int FetchForecast();
 };
 
 }  // namespace sta
 
-#endif  // _SPARETHEAIR_H_
+#endif // _SPARETHEAIR_H_

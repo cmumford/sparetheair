@@ -3,6 +3,8 @@
 #include "secrets.h"
 #include "sparetheair.h"
 
+using sta::SpareTheAir;
+
 namespace {
 
 struct Point {
@@ -63,15 +65,14 @@ void setup() {
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Serial.println("Connecting to WiFi..");
+    Serial.println(" waiting for wifi connect..");
   }
 
   Serial.printf("Connected to %s\n", kWiFiSSID);
 }
 
 void loop() {
-  sta::SpareTheAir sta;
-  int status = sta.Fetch();
+  int status = SpareTheAir::Fetch();
 
   int i = 0;
   while (true) {

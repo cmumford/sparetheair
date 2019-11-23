@@ -8,8 +8,7 @@ namespace sta {
 namespace {
 
 struct HttpFetchResult {
-  int httpCode;
-  String response;
+  int httpCode;  String response;
 };
 
 const char* kAlertUrl = "http://www.baaqmd.gov/Feeds/AlertRSS.aspx";
@@ -36,7 +35,6 @@ void XML_Alertcallback(uint8_t status_flags,
                        uint16_t tag_name_len,
                        char* data,
                        uint16_t data_len) {
-  // Serial.printf("Callback on tag %s\n", tag_name);
   if (!(status_flags & STATUS_TAG_TEXT))
     return;
   if (!strcasecmp(tag_name, "/rss/channel/item/date")) {
@@ -51,9 +49,7 @@ void XML_ForecastCallback(uint8_t status_flags,
                           uint16_t tag_name_len,
                           char* data,
                           uint16_t data_len) {
-  Serial.printf("Callback on tag %s\n", tag_name);
-  if ((status_flags & STATUS_TAG_TEXT) &&
-      !strcasecmp(tag_name, "/rss/channel/item")) {
+  if ((status_flags & STATUS_TAG_TEXT) && !strcasecmp(tag_name, "/rss/channel/item")) {
     g_parse_forecast_idx++;
   }
   if (!(status_flags & STATUS_TAG_TEXT))
@@ -67,6 +63,7 @@ void XML_ForecastCallback(uint8_t status_flags,
 
 }  // namespace
 
+// static
 int SpareTheAir::Fetch() {
   int err = FetchAlert();
   int ferr = FetchForecast();
@@ -74,6 +71,7 @@ int SpareTheAir::Fetch() {
   return err ? err != HTTP_CODE_OK : ferr;
 }
 
+// static
 int SpareTheAir::FetchAlert() {
   HttpFetchResult result = DoHTTPGet(kAlertUrl);
   if (result.httpCode != HTTP_CODE_OK)
@@ -92,6 +90,7 @@ int SpareTheAir::FetchAlert() {
   return HTTP_CODE_OK;
 }
 
+// static
 int SpareTheAir::FetchForecast() {
   HttpFetchResult result = DoHTTPGet(kForecastUrl);
   if (result.httpCode != HTTP_CODE_OK)
