@@ -1,4 +1,6 @@
 
+CLANG_FORMAT='clang-format'
+
 .PHONY: default
 default: run
 
@@ -12,3 +14,8 @@ run: test
 .PHONY: clean
 clean:
 	rm test
+
+.PHONY: format
+format:
+	${CLANG-FORMAT} --style=Chromium -i sparetheair.cpp
+	${CLANG-FORMAT} --style=Chromium -i sparetheair.h
