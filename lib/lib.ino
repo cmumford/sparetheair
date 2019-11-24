@@ -117,10 +117,18 @@ const char kRegionData[] =
 using sta::RegionValues;
 using sta::SpareTheAir;
 using sta::Status;
+using sta::AQICategory;
+
+// ArduinoUnit can't handle enumerations, so cast to integer.
+int CatToInt(AQICategory cat) {
+  return static_cast<int>(cat);
+}
 
 test(dayOfWeek) {
   SpareTheAir::Reset();
-  assertEqual(SpareTheAir::ExtractDayOfWeek("BAAQMD Air Quality Forecast for Friday", "Friday");
+  assertEqual(
+      SpareTheAir::ExtractDayOfWeek("BAAQMD Air Quality Forecast for Friday"),
+      "Friday");
   assertEqual(SpareTheAir::ExtractDayOfWeek("Saturday, November 23, 2019"),
               "Saturday");
   assertEqual(SpareTheAir::ExtractDayOfWeek("Invalid date."), "");
@@ -128,34 +136,54 @@ test(dayOfWeek) {
 }
 
 test(parseAQIName) {
-  assertEqual(SpareTheAir::ParseAQIName("Good", AQICategory::Good);
-  assertEqual(SpareTheAir::ParseAQIName("Moderate", AQICategory::Moderate);
-  assertEqual(SpareTheAir::ParseAQIName("Unhealthy for Sensitive Groups", AQICategory::UnhealthyForSensitiveGroups);
-  assertEqual(SpareTheAir::ParseAQIName("Unhealthy", AQICategory::Unhealthy);
-  assertEqual(SpareTheAir::ParseAQIName("Very Unhealthy", AQICategory::VeryUnhealthy);
-  assertEqual(SpareTheAir::ParseAQIName("Hazardous", AQICategory::Hazardous);
+  assertEqual(CatToInt(SpareTheAir::ParseAQIName("Good")),
+              CatToInt(AQICategory::Good));
+  assertEqual(CatToInt(SpareTheAir::ParseAQIName("Moderate")),
+              CatToInt(AQICategory::Moderate));
+  assertEqual(
+      CatToInt(SpareTheAir::ParseAQIName("Unhealthy for Sensitive Groups")),
+      CatToInt(AQICategory::UnhealthyForSensitiveGroups));
+  assertEqual(CatToInt(SpareTheAir::ParseAQIName("Unhealthy")),
+              CatToInt(AQICategory::Unhealthy));
+  assertEqual(CatToInt(SpareTheAir::ParseAQIName("Very Unhealthy")),
+              CatToInt(AQICategory::VeryUnhealthy));
+  assertEqual(CatToInt(SpareTheAir::ParseAQIName("Hazardous")),
+              CatToInt(AQICategory::Hazardous));
 
-  assertEqual(SpareTheAir::ParseAQIName("InvalidText", AQIName::None);
-  assertEqual(SpareTheAir::ParseAQIName("", AQIName::None);
+  assertEqual(CatToInt(SpareTheAir::ParseAQIName("InvalidText")),
+              CatToInt(AQICategory::None));
+  assertEqual(CatToInt(SpareTheAir::ParseAQIName("")),
+              CatToInt(AQICategory::None));
 }
 
 test(parseAQICategoryValue) {
-  assertEqual(SpareTheAir::AQIValueToCategory(0), AQICategory::Good);
-  assertEqual(SpareTheAir::AQIValueToCategory(10), AQICategory::Good);
-  assertEqual(SpareTheAir::AQIValueToCategory(51), AQICategory::Moderate);
-  assertEqual(SpareTheAir::AQIValueToCategory(100), AQICategory::Moderate);
-  assertEqual(SpareTheAir::AQIValueToCategory(101),
-              AQICategory::UnhealthyForSensitveGroups);
-  assertEqual(SpareTheAir::AQIValueToCategory(150),
-              AQICategory::UnhealthyForSensitveGroups);
-  assertEqual(SpareTheAir::AQIValueToCategory(151), AQICategory::Unhealthy);
-  assertEqual(SpareTheAir::AQIValueToCategory(200), AQICategory::Unhealthy);
-  assertEqual(SpareTheAir::AQIValueToCategory(201), AQICategory::VeryUnhealthy);
-  assertEqual(SpareTheAir::AQIValueToCategory(300), AQICategory::VeryUnhealthy);
-  assertEqual(SpareTheAir::AQIValueToCategory(301), AQICategory::Hazardous);
-  assertEqual(SpareTheAir::AQIValueToCategory(600), AQICategory::Hazardous);
+  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(0)),
+              CatToInt(AQICategory::Good));
+  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(10)),
+              CatToInt(AQICategory::Good));
+  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(51)),
+              CatToInt(AQICategory::Moderate));
+  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(100)),
+              CatToInt(AQICategory::Moderate));
+  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(101)),
+              CatToInt(AQICategory::UnhealthyForSensitiveGroups));
+  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(150)),
+              CatToInt(AQICategory::UnhealthyForSensitiveGroups));
+  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(151)),
+              CatToInt(AQICategory::Unhealthy));
+  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(200)),
+              CatToInt(AQICategory::Unhealthy));
+  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(201)),
+              CatToInt(AQICategory::VeryUnhealthy));
+  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(300)),
+              CatToInt(AQICategory::VeryUnhealthy));
+  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(301)),
+              CatToInt(AQICategory::Hazardous));
+  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(600)),
+              CatToInt(AQICategory::Hazardous));
 
-  assertEqual(SpareTheAir::AQIValueToCategory(-1), AQICategory::None);
+  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(-1)),
+              CatToInt(AQICategory::None));
 }
 
 test(aqiCategoryAbbrev) {
@@ -200,7 +228,7 @@ test(parseAlert) {
   assertEqual(today.day_of_week, "Saturday");
   // The following values only come from the forecast.
   assertEqual(today.aqi_val, 0);
-  assertEqual(today.aqi_name, "");
+  assertEqual(CatToInt(today.aqi_category), CatToInt(AQICategory::None));
   assertEqual(today.pollutant, "");
 }
 
@@ -214,7 +242,7 @@ test(parseForecast) {
   assertEqual(forecast.date_full, "");
   assertEqual(forecast.day_of_week, "Friday");
   assertEqual(forecast.aqi_val, 55);
-  assertEqual(forecast.aqi_name, AQICategory::Moderate);
+  assertEqual(CatToInt(forecast.aqi_category), CatToInt(AQICategory::Moderate));
   assertEqual(forecast.pollutant, "PM2.5");
 }
 
@@ -224,7 +252,7 @@ test(fullFetch) {
   // Sumulate doing a full forecast/alert fetch.
   SpareTheAir::ParseAlert(k_today_no_alert_response);
   SpareTheAir::ParseForecast(k_forecast_response);
-  SpareTheAir::MergeToday();
+  SpareTheAir::MergeAlert();
 
   const Status& today = SpareTheAir::status(0);
   assertEqual(today.alert_status, "No Alert");
@@ -232,7 +260,7 @@ test(fullFetch) {
   assertEqual(today.day_of_week, "Saturday");
   // The following values only come from the forecast.
   assertEqual(today.aqi_val, 55);
-  assertEqual(today.aqi_name, AQIategory::Moderate);
+  assertEqual(CatToInt(today.aqi_category), CatToInt(AQICategory::Moderate));
   assertEqual(today.pollutant, "PM2.5");
 }
 
@@ -243,7 +271,7 @@ test(failedFetch) {
   assertEqual(today.date_full, "");
   assertEqual(today.day_of_week, "");
   assertEqual(today.aqi_val, 0);
-  assertEqual(today.aqi_name, AQICategory::None);
+  assertEqual(CatToInt(today.aqi_category), CatToInt(AQICategory::None));
   assertEqual(today.pollutant, "");
 }
 

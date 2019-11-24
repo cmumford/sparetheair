@@ -75,15 +75,15 @@ void XML_ForecastCallback(uint8_t status_flags,
     return;
   if (g_parse_forecast_idx >= kMaxNumEntries)
     return;
-  Status forecast& = g_forecasts[g_parse_forecast_idx];
+  Status& forecast = g_forecasts[g_parse_forecast_idx];
   if (!strcasecmp(tag_name, "/rss/channel/item/title")) {
     forecast.date_full = data;
   } else if (!strcasecmp(tag_name, "/rss/channel/item/description")) {
-    RegionValues values = ExtractRegionValues(data, kRegion);
+    RegionValues values = SpareTheAir::ExtractRegionValues(data, kRegion);
     AQICategory category = SpareTheAir::ParseAQIName(values.aqi);
     if (category == AQICategory::None) {
-      forecast.aqi_val = atoi(values.aqi);
-      forecast.aqi_category = AQIValueToCategory(values.aqi);
+      forecast.aqi_val = atoi(values.aqi.c_str());
+      forecast.aqi_category = SpareTheAir::AQIValueToCategory(forecast.aqi_val);
     } else {
       forecast.aqi_category = category;
     }
@@ -160,7 +160,7 @@ String SpareTheAir::ExtractDayOfWeek(const String& str) {
   // This is the format used in the forecast item title
   int idx = str.indexOf("BAAQMD Air Quality Forecast for ");
   if (idx > 0)
-    return title.substring(idx);
+    return str.substring(idx);
   idx = str.indexOf(',');
   if (idx <= 0)
     return String();
@@ -208,11 +208,21 @@ RegionValues SpareTheAir::ExtractRegionValues(const String& region_data,
 // static
 const Status& SpareTheAir::status(int idx) {
   if (g_today_idx == -1)
-    return idx == 0 ? g_today : g_empty;
+    return idx == 0 ? g_today : g_empty_status;
   idx += g_today_idx;
   if (idx >= kMaxNumEntries)
-    return g_empty;
+    return g_empty_status;
   return g_forecasts[idx];
+}
+
+// static
+const Status& SpareTheAir::forecast(int idx) {
+  return g_forecasts[idx];
+}
+
+// static
+const Status& SpareTheAir::AlertStatus() {
+  return g_today;
 }
 
 // static
@@ -240,7 +250,7 @@ AQICategory SpareTheAir::ParseAQIName(const String& name) {
 }
 
 // static
-const char* SpareTheAir::AQICategoryAbbrev(AQICatetory category) {
+const char* SpareTheAir::AQICategoryAbbrev(AQICategory category) {
   switch (category) {
     case AQICategory::Good:
       return "G";
@@ -260,17 +270,17 @@ const char* SpareTheAir::AQICategoryAbbrev(AQICatetory category) {
 
 // static
 AQICategory SpareTheAir::AQIValueToCategory(int value) {
-  if (value <= 50):
-        return AQI::Good;
-  if (value <= 100):
-        return AQI::Moderate;
-  if (value <= 150):
-        return AQI::UnhealthyForSensitiveGroups;
-  if (value <= 200):
-        return AQI::Unhealthy;
-  if (value <= 300):
-        return AQI::VeryUnhealthy;
-  return AQI::Hazardous;
+  if (value <= 50)
+    return AQICategory::Good;
+  if (value <= 100)
+    return AQICategory::Moderate;
+  if (value <= 150)
+    return AQICategory::UnhealthyForSensitiveGroups;
+  if (value <= 200)
+    return AQICategory::Unhealthy;
+  if (value <= 300)
+    return AQICategory::VeryUnhealthy;
+  return AQICategory::Hazardous;
 }
 
 // The forecast results may contain days in the past, so the actual alert

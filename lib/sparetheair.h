@@ -6,15 +6,17 @@
 
 namespace sta {
 
-class enum AQICategory {
-  None,
-  Good,
-  Moderate,
-  UnhealthyForSensitiveGroups,
-  Unhealthy,
-  VeryUnhealthy,
-  Hazardous,
-}
+// Uses a type (int) for unit testing because ArduinoUnit can't deal with
+// enumerations.
+enum class AQICategory : int {
+  None = 0,
+  Good = 1,
+  Moderate = 2,
+  UnhealthyForSensitiveGroups = 3,
+  Unhealthy = 4,
+  VeryUnhealthy = 5,
+  Hazardous = 6,
+};
 
 // Status for a date. This may be the current status or a forecast.
 struct Status {
@@ -75,7 +77,7 @@ class SpareTheAir {
                                           const String& region_name);
   static AQICategory ParseAQIName(const String& name);
   static AQICategory AQIValueToCategory(int value);
-  static const char* AQICategoryAbbrev(AQICatetory category);
+  static const char* AQICategoryAbbrev(AQICategory category);
   // Return the alert response status.
   static const Status& AlertStatus();
   // Fetch and parse the alert from he network. Returns 0 upon success.
