@@ -1,5 +1,8 @@
 
-CLANG_FORMAT='clang-format'
+# Copyright 2019 Christopher Mumford
+# This code is licensed under MIT license (see LICENSE for details)
+
+CLANG_FORMAT=clang-format
 
 .PHONY: default
 default: run
@@ -17,7 +20,8 @@ clean:
 
 .PHONY: format
 format:
-	${CLANG_FORMAT} -i lib/lib.ino
-	${CLANG_FORMAT} -i lib/sparetheair.cpp
-	${CLANG_FORMAT} -i lib/sparetheair.h
-	${CLANG_FORMAT} -i sparetheair.ino
+	${CLANG_FORMAT} -i \
+		lib/lib.ino \
+		lib/sparetheair.cpp \
+		lib/sparetheair.h \
+		sparetheair.ino

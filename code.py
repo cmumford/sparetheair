@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# Copyright 2019 Christopher Mumford
+# This code is licensed under MIT license (see LICENSE for details)
+
 # apt-get install python3-pil
 from PIL import Image, ImageDraw, ImageFont
 # apt-get install python3-feedparser

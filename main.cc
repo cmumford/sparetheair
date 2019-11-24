@@ -1,3 +1,5 @@
+// Copyright 2019 Christopher Mumford
+// This code is licensed under MIT license (see LICENSE for details)
 #include <iostream>
 #include <string>
 #include <vector>

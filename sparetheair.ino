@@ -1,3 +1,6 @@
+// Copyright 2019 Christopher Mumford
+// This code is licensed under MIT license (see LICENSE for details)
+
 #include <WiFi.h>
 
 #include "lib/sparetheair.cpp"
@@ -35,7 +38,8 @@ const Rectangle kTodayBounds = {Point({0, 0}),
 const int kForecastWidth = kEPaperSize.width / 3;
 // There are 4 forecast sections so 3 dividers between them.
 const int kDividers[sta::kNumStatusDays - 1] = {
-    kEPaperSize.width * 1 / 4, kEPaperSize.width * 2 / 4,
+    kEPaperSize.width * 1 / 4,
+    kEPaperSize.width * 2 / 4,
     kEPaperSize.width * 3 / 4,
 };
 const Rectangle kForecastBounds[sta::kNumStatusDays] = {

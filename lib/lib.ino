@@ -1,9 +1,12 @@
+// Copyright 2019 Christopher Mumford
+// This code is licensed under MIT license (see LICENSE for details)
+
 #include <ArduinoUnit.h>
 #include <ArduinoUnitMock.h>
 
 #include "sparetheair.h"
 
-const char today_no_alert[] =
+const char k_today_no_alert_response[] =
     "﻿<?xml version=\"1.0\" encoding=\"utf-8\"?><rss version=\"2.0\">\n"
     "\n"
     "<channel>\n"
@@ -19,7 +22,7 @@ const char today_no_alert[] =
     "<description>No Alert</description></item></channel>\n"
     "</rss>";
 
-const char forecast[] =
+const char k_forecast_response[] =
     "﻿<?xml version=\"1.0\" encoding=\"utf-8\"?><rss version=\"2.0\">\n"
     "\n"
     "<channel>\n"
@@ -116,14 +119,59 @@ using sta::SpareTheAir;
 using sta::Status;
 
 test(dayOfWeek) {
-  SpareTheAir::ResetForTest();
+  SpareTheAir::Reset();
+  assertEqual(SpareTheAir::ExtractDayOfWeek("BAAQMD Air Quality Forecast for Friday", "Friday");
   assertEqual(SpareTheAir::ExtractDayOfWeek("Saturday, November 23, 2019"),
               "Saturday");
   assertEqual(SpareTheAir::ExtractDayOfWeek("Invalid date."), "");
+  assertEqual(SpareTheAir::ExtractDayOfWeek(""), "");
+}
+
+test(parseAQIName) {
+  assertEqual(SpareTheAir::ParseAQIName("Good", AQICategory::Good);
+  assertEqual(SpareTheAir::ParseAQIName("Moderate", AQICategory::Moderate);
+  assertEqual(SpareTheAir::ParseAQIName("Unhealthy for Sensitive Groups", AQICategory::UnhealthyForSensitiveGroups);
+  assertEqual(SpareTheAir::ParseAQIName("Unhealthy", AQICategory::Unhealthy);
+  assertEqual(SpareTheAir::ParseAQIName("Very Unhealthy", AQICategory::VeryUnhealthy);
+  assertEqual(SpareTheAir::ParseAQIName("Hazardous", AQICategory::Hazardous);
+
+  assertEqual(SpareTheAir::ParseAQIName("InvalidText", AQIName::None);
+  assertEqual(SpareTheAir::ParseAQIName("", AQIName::None);
+}
+
+test(parseAQICategoryValue) {
+  assertEqual(SpareTheAir::AQIValueToCategory(0), AQICategory::Good);
+  assertEqual(SpareTheAir::AQIValueToCategory(10), AQICategory::Good);
+  assertEqual(SpareTheAir::AQIValueToCategory(51), AQICategory::Moderate);
+  assertEqual(SpareTheAir::AQIValueToCategory(100), AQICategory::Moderate);
+  assertEqual(SpareTheAir::AQIValueToCategory(101),
+              AQICategory::UnhealthyForSensitveGroups);
+  assertEqual(SpareTheAir::AQIValueToCategory(150),
+              AQICategory::UnhealthyForSensitveGroups);
+  assertEqual(SpareTheAir::AQIValueToCategory(151), AQICategory::Unhealthy);
+  assertEqual(SpareTheAir::AQIValueToCategory(200), AQICategory::Unhealthy);
+  assertEqual(SpareTheAir::AQIValueToCategory(201), AQICategory::VeryUnhealthy);
+  assertEqual(SpareTheAir::AQIValueToCategory(300), AQICategory::VeryUnhealthy);
+  assertEqual(SpareTheAir::AQIValueToCategory(301), AQICategory::Hazardous);
+  assertEqual(SpareTheAir::AQIValueToCategory(600), AQICategory::Hazardous);
+
+  assertEqual(SpareTheAir::AQIValueToCategory(-1), AQICategory::None);
+}
+
+test(aqiCategoryAbbrev) {
+  assertEqual(SpareTheAir::AQICategoryAbbrev(AQICategory::Good), "G");
+  assertEqual(SpareTheAir::AQICategoryAbbrev(AQICategory::Moderate), "M");
+  assertEqual(
+      SpareTheAir::AQICategoryAbbrev(AQICategory::UnhealthyForSensitiveGroups),
+      "USG");
+  assertEqual(SpareTheAir::AQICategoryAbbrev(AQICategory::Unhealthy), "U");
+  assertEqual(SpareTheAir::AQICategoryAbbrev(AQICategory::VeryUnhealthy), "VU");
+  assertEqual(SpareTheAir::AQICategoryAbbrev(AQICategory::Hazardous), "H");
+  assertEqual(SpareTheAir::AQICategoryAbbrev(AQICategory::None), "?");
 }
 
 test(regionValues) {
-  SpareTheAir::ResetForTest();
+  SpareTheAir::Reset();
 
   RegionValues values =
       SpareTheAir::ExtractRegionValues(kRegionData, "Eastern District");
@@ -143,10 +191,10 @@ test(regionValues) {
 }
 
 test(parseAlert) {
-  SpareTheAir::ResetForTest();
-  SpareTheAir::ParseAlert(today_no_alert);
+  SpareTheAir::Reset();
+  SpareTheAir::ParseAlert(k_today_no_alert_response);
 
-  const Status& today = SpareTheAir::status(0);
+  const Status& today = SpareTheAir::AlertStatus();
   assertEqual(today.alert_status, "No Alert");
   assertEqual(today.date_full, "Saturday, November 23, 2019");
   assertEqual(today.day_of_week, "Saturday");
@@ -157,17 +205,46 @@ test(parseAlert) {
 }
 
 test(parseForecast) {
-  SpareTheAir::ResetForTest();
-  SpareTheAir::ParseForecast(forecast);
+  SpareTheAir::Reset();
+  SpareTheAir::ParseForecast(k_forecast_response);
 
-  const Status& tomorrow = SpareTheAir::status(1);
-  assertEqual(tomorrow.alert_status, "");
-  assertEqual(tomorrow.date_full, "");
-  assertEqual(tomorrow.day_of_week, "");
+  const Status& forecast = SpareTheAir::forecast(0);
+  // First two only come from the alert.
+  assertEqual(forecast.alert_status, "");
+  assertEqual(forecast.date_full, "");
+  assertEqual(forecast.day_of_week, "Friday");
+  assertEqual(forecast.aqi_val, 55);
+  assertEqual(forecast.aqi_name, AQICategory::Moderate);
+  assertEqual(forecast.pollutant, "PM2.5");
+}
+
+test(fullFetch) {
+  SpareTheAir::Reset();
+
+  // Sumulate doing a full forecast/alert fetch.
+  SpareTheAir::ParseAlert(k_today_no_alert_response);
+  SpareTheAir::ParseForecast(k_forecast_response);
+  SpareTheAir::MergeToday();
+
+  const Status& today = SpareTheAir::status(0);
+  assertEqual(today.alert_status, "No Alert");
+  assertEqual(today.date_full, "Saturday, November 23, 2019");
+  assertEqual(today.day_of_week, "Saturday");
   // The following values only come from the forecast.
-  assertEqual(tomorrow.aqi_val, 0);
-  assertEqual(tomorrow.aqi_name, "");
-  assertEqual(tomorrow.pollutant, "");
+  assertEqual(today.aqi_val, 55);
+  assertEqual(today.aqi_name, AQIategory::Moderate);
+  assertEqual(today.pollutant, "PM2.5");
+}
+
+test(failedFetch) {
+  SpareTheAir::Reset();
+  const Status& today = SpareTheAir::status(0);
+  assertEqual(today.alert_status, "");
+  assertEqual(today.date_full, "");
+  assertEqual(today.day_of_week, "");
+  assertEqual(today.aqi_val, 0);
+  assertEqual(today.aqi_name, AQICategory::None);
+  assertEqual(today.pollutant, "");
 }
 
 void setup() {
