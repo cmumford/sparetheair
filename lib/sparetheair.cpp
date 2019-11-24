@@ -17,9 +17,11 @@ const char* kForecastUrl = "http://www.baaqmd.gov/Feeds/AirForecastRSS.aspx";
 
 uint8_t g_xml_parse_buffer[512];
 int g_parse_forecast_idx = 0;
-const int kMaxNumEntries = 1 + sta::kNumForecastDays;
+const int kMaxNumEntries = 5;
 // The first one is today.
 Status g_forecasts[kMaxNumEntries];
+
+static_assert(kMaxNumEntries >= kNumStatusDays, "Too small");
 
 HttpFetchResult DoHTTPGet(const char* url) {
   HttpFetchResult result;
@@ -126,6 +128,44 @@ String SpareTheAir::ExtractDayOfWeek(const String& date_full) {
   if (idx <= 0)
     return String();
   return date_full.substring(0, idx);
+}
+
+// The region data is of the form:
+//
+// "Santa Clara Valley - AQI: 55, Pollutant: PM2.6"
+//
+// static
+RegionValues SpareTheAir::ExtractRegionValues(const String& region_data,
+                                              const String& region_name) {
+  RegionValues values;
+
+  int region_idx = region_data.indexOf(region_name);
+  if (region_idx < 0)
+    return values;
+
+  values.name = region_name;
+  int idx = region_data.indexOf("AQI: ", region_idx);
+  if (idx > region_idx) {
+    int end = region_data.indexOf(",", idx);
+    const int kAqiLen = 5;  // Length of "AQI: "
+    if (end > idx)
+      values.aqi = region_data.substring(idx + kAqiLen, end);
+  }
+
+  idx = region_data.indexOf("Pollutant: ", region_idx);
+  if (idx > region_idx) {
+    int end = region_data.indexOf("\n", idx);
+    const int kPollutantLen = 11;  // Length of "Pollutant: "
+    if (end > idx) {
+      // Not the last value.
+      values.pollutant = region_data.substring(idx + kPollutantLen, end);
+    } else {
+      // the last value in the data string.
+      values.pollutant = region_data.substring(idx + kPollutantLen);
+    }
+  }
+
+  return values;
 }
 
 // static

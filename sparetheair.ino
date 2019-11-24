@@ -34,11 +34,11 @@ const Rectangle kTodayBounds = {Point({0, 0}),
                                 Point({kEPaperBounds.right(), 88})};
 const int kForecastWidth = kEPaperSize.width / 3;
 // There are 4 forecast sections so 3 dividers between them.
-const int kDividers[sta::kNumForecastDays - 1] = {
+const int kDividers[sta::kNumStatusDays - 1] = {
     kEPaperSize.width * 1 / 4, kEPaperSize.width * 2 / 4,
     kEPaperSize.width * 3 / 4,
 };
-const Rectangle kForecastBounds[sta::kNumForecastDays] = {
+const Rectangle kForecastBounds[sta::kNumStatusDays] = {
     {Point({0 * kForecastWidth, kTodayBounds.bottom()}),
      Point({kDividers[0] - 1, kEPaperBounds.bottom()})},
     {Point({kDividers[0], kTodayBounds.bottom()}),

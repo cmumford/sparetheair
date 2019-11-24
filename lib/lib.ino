@@ -103,6 +103,15 @@ const char forecast[] =
     "</channel>\n"
     "</rss>";
 
+const char kRegionData[] =
+    "AQI and Pollutant Forecast for Friday by district.\n"
+    "North Counties - AQI: 55, Pollutant: PM2.5.\n"
+    "Coast and Central Bay - AQI: 57, Pollutant: PM2.5.\n"
+    "Eastern District - AQI: 53, Pollutant: PM2.5\n"
+    "South and Central Bay - AQI: 50, Pollutant: PM2.5\n"
+    "Santa Clara Valley - AQI: 55, Pollutant: PM2.6";
+
+using sta::RegionValues;
 using sta::SpareTheAir;
 using sta::Status;
 
@@ -111,6 +120,26 @@ test(dayOfWeek) {
   assertEqual(SpareTheAir::ExtractDayOfWeek("Saturday, November 23, 2019"),
               "Saturday");
   assertEqual(SpareTheAir::ExtractDayOfWeek("Invalid date."), "");
+}
+
+test(regionValues) {
+  SpareTheAir::ResetForTest();
+
+  RegionValues values =
+      SpareTheAir::ExtractRegionValues(kRegionData, "Eastern District");
+  assertEqual(values.name, "Eastern District");
+  assertEqual(values.aqi, "53");
+  assertEqual(values.pollutant, "PM2.5");
+
+  values = SpareTheAir::ExtractRegionValues(kRegionData, "Santa Clara Valley");
+  assertEqual(values.name, "Santa Clara Valley");
+  assertEqual(values.aqi, "55");
+  assertEqual(values.pollutant, "PM2.6");
+
+  values = SpareTheAir::ExtractRegionValues(kRegionData, "InvalidName");
+  assertEqual(values.name, "");
+  assertEqual(values.aqi, "");
+  assertEqual(values.pollutant, "");
 }
 
 test(parseAlert) {
@@ -132,13 +161,13 @@ test(parseForecast) {
   SpareTheAir::ParseForecast(forecast);
 
   const Status& tomorrow = SpareTheAir::status(1);
-  assertEqual(today.alert_status, "No Alert");
-  assertEqual(today.date_full, "Saturday, November 23, 2019");
-  assertEqual(today.day_of_week, "Saturday");
+  assertEqual(tomorrow.alert_status, "");
+  assertEqual(tomorrow.date_full, "");
+  assertEqual(tomorrow.day_of_week, "");
   // The following values only come from the forecast.
-  assertEqual(today.aqi_val, 0);
-  assertEqual(today.aqi_name, "");
-  assertEqual(today.pollutant, "");
+  assertEqual(tomorrow.aqi_val, 0);
+  assertEqual(tomorrow.aqi_name, "");
+  assertEqual(tomorrow.pollutant, "");
 }
 
 void setup() {

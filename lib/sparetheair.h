@@ -38,7 +38,8 @@ struct RegionValues {
   String pollutant;
 };
 
-const int kNumForecastDays = 4;
+// The maximum number of status days returned by SpareTheAir::status().
+const int kNumStatusDays = 4;
 
 class SpareTheAir {
  public:
@@ -47,10 +48,13 @@ class SpareTheAir {
   SpareTheAir() = delete;
   ~SpareTheAir() = delete;
 
+  // Index 0 is always today, and index 1 is tomorrow, etc.
   static const Status& status(int idx);
 
  public:
   static String ExtractDayOfWeek(const String& date_full);
+  static RegionValues ExtractRegionValues(const String& region_data,
+                                          const String& region_name);
   static int FetchAlert();
   static int FetchForecast();
   static void ParseAlert(const String& xmlString);
