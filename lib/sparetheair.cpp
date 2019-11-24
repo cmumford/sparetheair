@@ -308,6 +308,8 @@ void SpareTheAir::MergeAlert() {
   for (int i = 0; i < kMaxNumEntries; i++) {
     Status& forecast = g_forecasts[i];
     if (g_today.day_of_week == forecast.day_of_week) {
+      if (g_today.aqi_category != AQICategory::None)
+        forecast.aqi_category = g_today.aqi_category;
       forecast.alert_status = g_today.alert_status;
       forecast.date_full = g_today.date_full;
       g_today_idx = i;
