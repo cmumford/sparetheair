@@ -133,6 +133,8 @@ test(dayOfWeek) {
               "Saturday");
   assertEqual(SpareTheAir::ExtractDayOfWeek("Invalid date."), "");
   assertEqual(SpareTheAir::ExtractDayOfWeek(""), "");
+  assertEqual(SpareTheAir::ExtractDayOfWeek("BAAQMD Air Quality Forecast for "),
+              "");
 }
 
 test(parseAQIName) {
@@ -227,7 +229,7 @@ test(parseAlert) {
   assertEqual(today.date_full, "Saturday, November 23, 2019");
   assertEqual(today.day_of_week, "Saturday");
   // The following values only come from the forecast.
-  assertEqual(today.aqi_val, 0);
+  assertEqual(today.aqi_val, -1);
   assertEqual(CatToInt(today.aqi_category), CatToInt(AQICategory::None));
   assertEqual(today.pollutant, "");
 }
@@ -236,14 +238,22 @@ test(parseForecast) {
   SpareTheAir::Reset();
   SpareTheAir::ParseForecast(k_forecast_response);
 
-  const Status& forecast = SpareTheAir::forecast(0);
+  const Status& first = SpareTheAir::forecast(0);
   // First two only come from the alert.
-  assertEqual(forecast.alert_status, "");
-  assertEqual(forecast.date_full, "");
-  assertEqual(forecast.day_of_week, "Friday");
-  assertEqual(forecast.aqi_val, 55);
-  assertEqual(CatToInt(forecast.aqi_category), CatToInt(AQICategory::Moderate));
-  assertEqual(forecast.pollutant, "PM2.5");
+  assertEqual(first.alert_status, "");
+  assertEqual(first.date_full, "BAAQMD Air Quality Forecast for Friday");
+  assertEqual(first.day_of_week, "Friday");
+  assertEqual(first.aqi_val, 55);
+  assertEqual(CatToInt(first.aqi_category), CatToInt(AQICategory::Moderate));
+  assertEqual(first.pollutant, "PM2.5");
+
+  const Status& second = SpareTheAir::forecast(1);
+  assertEqual(second.alert_status, "");
+  assertEqual(second.date_full, "BAAQMD Air Quality Forecast for Saturday");
+  assertEqual(second.day_of_week, "Saturday");
+  assertEqual(second.aqi_val, 63);
+  assertEqual(CatToInt(second.aqi_category), CatToInt(AQICategory::Moderate));
+  assertEqual(second.pollutant, "PM2.5");
 }
 
 test(fullFetch) {
@@ -259,7 +269,7 @@ test(fullFetch) {
   assertEqual(today.date_full, "Saturday, November 23, 2019");
   assertEqual(today.day_of_week, "Saturday");
   // The following values only come from the forecast.
-  assertEqual(today.aqi_val, 55);
+  assertEqual(today.aqi_val, 63);
   assertEqual(CatToInt(today.aqi_category), CatToInt(AQICategory::Moderate));
   assertEqual(today.pollutant, "PM2.5");
 }
@@ -270,7 +280,7 @@ test(failedFetch) {
   assertEqual(today.alert_status, "");
   assertEqual(today.date_full, "");
   assertEqual(today.day_of_week, "");
-  assertEqual(today.aqi_val, 0);
+  assertEqual(today.aqi_val, -1);
   assertEqual(CatToInt(today.aqi_category), CatToInt(AQICategory::None));
   assertEqual(today.pollutant, "");
 }

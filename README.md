@@ -11,5 +11,5 @@ of the California San Francisco bay area's
 ## Arduino Modules
 
 1. [HttpClient](https://www.arduino.cc/en/Tutorial/HttpClient)
-2. TinyXML
+2. [TinyXML](https://github.com/adafruit/TinyXML)
 3. ArduinoUit

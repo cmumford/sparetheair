@@ -22,16 +22,21 @@ const int kMaxNumEntries = 6;
 
 // Buffer used by the XML parser.
 uint8_t g_xml_parse_buffer[512];
-// The index of the forecast status currently being written to by the
+
+// The index of the forecast item in the XML response used by the
 // XML parser callback.
-int g_parse_forecast_idx = 0;
+int g_parse_channel_item_idx = 0;
+
 // The response from the alert url.
 Status g_today;
+
 // Empty status used for errors.
 Status g_empty_status;
+
 // The first one is today which is made up from both the alert request
 // and the corresponding foreast entry.
 Status g_forecasts[kMaxNumEntries];
+
 // This is the index into |g_forecasts| that corresponds to the alert day
 // (i,e today).
 int g_today_idx = -1;
@@ -67,17 +72,20 @@ void XML_ForecastCallback(uint8_t status_flags,
                           uint16_t tag_name_len,
                           char* data,
                           uint16_t data_len) {
-  if ((status_flags & STATUS_TAG_TEXT) &&
+  if ((status_flags & STATUS_END_TAG) &&
       !strcasecmp(tag_name, "/rss/channel/item")) {
-    g_parse_forecast_idx++;
+    g_parse_channel_item_idx++;
+    return;
   }
   if (!(status_flags & STATUS_TAG_TEXT))
     return;
-  if (g_parse_forecast_idx >= kMaxNumEntries)
+  if (g_parse_channel_item_idx >= kMaxNumEntries) {
     return;
-  Status& forecast = g_forecasts[g_parse_forecast_idx];
+  }
+  Status& forecast = g_forecasts[g_parse_channel_item_idx];
   if (!strcasecmp(tag_name, "/rss/channel/item/title")) {
     forecast.date_full = data;
+    forecast.day_of_week = SpareTheAir::ExtractDayOfWeek(forecast.date_full);
   } else if (!strcasecmp(tag_name, "/rss/channel/item/description")) {
     RegionValues values = SpareTheAir::ExtractRegionValues(data, kRegion);
     AQICategory category = SpareTheAir::ParseAQIName(values.aqi);
@@ -132,7 +140,7 @@ void SpareTheAir::ParseAlert(const String& xmlString) {
     xml.processChar(xmlString[i]);
   }
 
-  g_forecasts[0].day_of_week = ExtractDayOfWeek(g_forecasts[0].date_full);
+  g_today.day_of_week = ExtractDayOfWeek(g_today.date_full);
 }
 
 // static
@@ -158,9 +166,10 @@ void SpareTheAir::ParseForecast(const String& xmlString) {
 // static
 String SpareTheAir::ExtractDayOfWeek(const String& str) {
   // This is the format used in the forecast item title
+  const int kPrefixLen = 32;
   int idx = str.indexOf("BAAQMD Air Quality Forecast for ");
-  if (idx > 0)
-    return str.substring(idx);
+  if (idx == 0)
+    return str.substring(kPrefixLen);
   idx = str.indexOf(',');
   if (idx <= 0)
     return String();
@@ -227,6 +236,7 @@ const Status& SpareTheAir::AlertStatus() {
 
 // static
 void SpareTheAir::Reset() {
+  g_parse_channel_item_idx = 0;
   g_today_idx = -1;
   for (int i = 0; i < kMaxNumEntries; i++)
     g_forecasts[i].Reset();
@@ -270,6 +280,8 @@ const char* SpareTheAir::AQICategoryAbbrev(AQICategory category) {
 
 // static
 AQICategory SpareTheAir::AQIValueToCategory(int value) {
+  if (value < 0)
+    return AQICategory::None;
   if (value <= 50)
     return AQICategory::Good;
   if (value <= 100)
