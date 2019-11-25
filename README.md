@@ -13,3 +13,10 @@ of the California San Francisco bay area's
 1. [HttpClient](https://www.arduino.cc/en/Tutorial/HttpClient)
 2. [TinyXML](https://github.com/adafruit/TinyXML)
 3. ArduinoUnit
+
+## Building
+
+This project has two Arduino sketches:
+
+1. sparetheair.ino (app sketch).
+2. lib/lib.ino (unit test sketch).

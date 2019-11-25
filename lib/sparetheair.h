@@ -80,10 +80,10 @@ class SpareTheAir {
   static const char* AQICategoryAbbrev(AQICategory category);
   // Return the alert response status.
   static const Status& AlertStatus();
-  // Fetch and parse the alert from he network. Returns 0 upon success.
+  // Fetch and parse the alert from the network. Returns 0 upon success.
   static int FetchAlert();
   static void ParseAlert(const String& xmlString);
-  // Fetch and parse the forecasts from he network. Returns 0 upon success.
+  // Fetch and parse the forecasts from the network. Returns 0 upon success.
   static int FetchForecast();
   static void ParseForecast(const String& xmlString);
   // Similar to status(), but returns raw forecast array values.
