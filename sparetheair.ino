@@ -5,7 +5,7 @@
 
 #include "lib/sparetheair.cpp"
 #include "lib/sparetheair.h"
-#include "secrets.h"
+#include "arduino_secrets.h"
 
 using sta::SpareTheAir;
 
