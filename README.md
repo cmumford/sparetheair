@@ -1,4 +1,4 @@
-# Spare the Air eInk Display [![Build Status](https://github.com/cmumford/sparetheair.svg?branch=master)](https://github.com/cmumford/sparetheair)
+# Spare the Air eInk Display [![Build Status](https://travis-ci.com/cmumford/sparetheair.svg?branch=master)](https://travis-ci.com/cmumford/sparetheair)
 
 This is a project to display the current status, and forecast,
 of the California San Francisco bay area's
