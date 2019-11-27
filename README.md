@@ -9,9 +9,11 @@ Adafruit [2.7" Tri-Color eInk / ePaper Display with SRAM](https://www.adafruit.c
 
 ## ESP32 info
 
-1. Author uses the [HiLetgo ESP-WROOM-32 ESP32 ESP-32S Development Board](https://smile.amazon.com/dp/B0718T232Z/ref=cm_sw_em_r_mt_dp_U_NaB0DbY3RFH7X).
+1. Any ESP32 should work. Author uses the
+   [HiLetgo ESP-WROOM-32 ESP32 ESP-32S Development Board](https://smile.amazon.com/dp/B0718T232Z/ref=cm_sw_em_r_mt_dp_U_NaB0DbY3RFH7X).
 2. Install the esp32 board via the Arduino IDE's Boards Manager.
-3. Install the appropriate [driver](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers).
+3. Install the appropriate [driver](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers)
+   for your operating system.
 
 ## Building
 
@@ -20,8 +22,8 @@ This project uses the following Arduino libraries.
 1. [HttpClient](https://www.arduino.cc/en/Tutorial/HttpClient)
 2. [TinyXML](https://github.com/adafruit/TinyXML)
 3. [ArduinoUnit](https://github.com/mmurdoch/arduinounit)
-4. [Adafruit_EPD](https://github.com/adafruit/Adafruit_EPD)
-5. [Adafruit_GFX](https://github.com/adafruit/Adafruit-GFX-Library)
+4. [Adafruit EPD Library](https://github.com/adafruit/Adafruit_EPD)
+5. [Adafruit GFX Library](https://github.com/adafruit/Adafruit-GFX-Library)
 
 To install follow [these instructions](https://www.arduino.cc/en/guide/libraries).
 
