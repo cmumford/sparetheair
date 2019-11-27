@@ -20,7 +20,7 @@ addons:
       - python3-wheel
 
 before_install:
-   - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
+   - source <(curl -SLs https://raw.githubusercontent.com/cmumford/travis-ci-arduino/esp32-fix/install.sh)
 
 install:
    - arduino --install-library "ArduinoUnit"
