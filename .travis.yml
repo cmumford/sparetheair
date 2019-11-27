@@ -22,7 +22,6 @@ before_install:
    - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
 
 install:
-   - arduino --install-library "HttpClient"
    - arduino --install-library "TinyXML"
    - arduino --install-library "ArduinoUnit"
    - arduino --install-library "Adafruit EPD"
