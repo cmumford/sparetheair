@@ -22,6 +22,8 @@ before_install:
    - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
 
 install:
+   - arduino --install-boards esp32:esp32
+   - arduino --install-boards esp8266:esp8266
    - arduino --install-library "TinyXML"
    - arduino --install-library "Adafruit EPD"
    - arduino --install-library "Adafruit GFX Library"
