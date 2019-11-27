@@ -28,7 +28,7 @@ install:
    - arduino --install-library "Adafruit GFX Library"
 
 script:
-   - build_main_platforms
+  - build_platform esp32
 
 # Generate and deploy documentation
 after_success:
