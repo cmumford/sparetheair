@@ -1,8 +1,8 @@
 // Copyright 2019 Christopher Mumford
 // This code is licensed under MIT license (see LICENSE for details)
 
-#include <TinyXML.h>
 #include <HTTPClient.h>
+#include <TinyXML.h>
 
 #include "sparetheair.h"
 
