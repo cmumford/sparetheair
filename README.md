@@ -22,7 +22,7 @@ This project uses the following Arduino libraries.
 1. [HttpClient](https://www.arduino.cc/en/Tutorial/HttpClient)
 2. [TinyXML](https://github.com/adafruit/TinyXML)
 3. [ArduinoUnit](https://github.com/mmurdoch/arduinounit)
-4. [Adafruit EPD Library](https://github.com/adafruit/Adafruit_EPD)
+4. [Adafruit EPD](https://github.com/adafruit/Adafruit_EPD)
 5. [Adafruit GFX Library](https://github.com/adafruit/Adafruit-GFX-Library)
 
 To install follow [these instructions](https://www.arduino.cc/en/guide/libraries).
