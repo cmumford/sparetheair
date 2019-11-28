@@ -274,6 +274,8 @@ const char* SpareTheAir::AQICategoryAbbrev(AQICategory category) {
       return "VU";
     case AQICategory::Hazardous:
       return "H";
+    case AQICategory::None:
+      return "?";
   }
   return "?";
 }
