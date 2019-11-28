@@ -19,13 +19,14 @@ Adafruit [2.7" Tri-Color eInk / ePaper Display with SRAM](https://www.adafruit.c
 
 This project uses the following Arduino libraries.
 
-1. [HTTPClient](https://github.com/espressif/arduino-esp32/tree/master/libraries/HTTPClient)
-2. [TinyXML](https://github.com/adafruit/TinyXML)
-3. [ArduinoUnit](https://github.com/mmurdoch/arduinounit)
-4. [Adafruit EPD](https://github.com/adafruit/Adafruit_EPD)
-5. [Adafruit GFX Library](https://github.com/adafruit/Adafruit-GFX-Library)
+1. [TinyXML](https://github.com/adafruit/TinyXML)
+2. [ArduinoUnit](https://github.com/mmurdoch/arduinounit)
+3. [Adafruit EPD](https://github.com/adafruit/Adafruit_EPD)
+4. [Adafruit GFX Library](https://github.com/adafruit/Adafruit-GFX-Library)
 
 To install follow [these instructions](https://www.arduino.cc/en/guide/libraries).
+
+Make sure the "ESP32 Dev Module" board is selected.
 
 This project has two Arduino sketches:
 

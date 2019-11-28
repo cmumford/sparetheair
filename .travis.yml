@@ -24,7 +24,6 @@ before_install:
 
 install:
    - arduino --install-library "ArduinoUnit"
-   - arduino --install-library "HTTPClient"
    - arduino --install-library "TinyXML"
    - arduino --install-library "Adafruit EPD"
    - arduino --install-library "Adafruit GFX Library"
