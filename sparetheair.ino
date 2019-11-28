@@ -62,6 +62,8 @@ const int kLEDPin = 2;
 void setup() {
   Serial.begin(115200);
   pinMode(kLEDPin, OUTPUT);
+  if (&kForecastBounds[0] != 0)
+    Serial.println("Ignore unused variables");
 }
 
 // Connect to WiFi. Will flash the LED while waiting to connect.
@@ -88,6 +90,7 @@ int ConnectWiFi() {
 int DisconnectWiFi() {
   // Can this be implemented?
   // WiFi.end();
+  return 0;
 }
 
 void DrawStatus() {}
