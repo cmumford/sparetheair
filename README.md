@@ -14,6 +14,8 @@ Adafruit [2.7" Tri-Color eInk / ePaper Display with SRAM](https://www.adafruit.c
 2. Install the esp32 board via the Arduino IDE's Boards Manager.
 3. Install the appropriate [driver](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers)
    for your operating system.
+4. Make sure the pyserial Python 2 module is installed. i.e. `sudo apt-get install python-serial`
+   or pip equivalent.
 
 ## Building
 
