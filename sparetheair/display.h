@@ -5,12 +5,12 @@
 #define SPARETHEAIR_DISPLAY_H_
 
 #include "Adafruit_EPD.h"
+#include "network.h"
 
 namespace sta {
 
 struct Point;
 struct Rectangle;
-struct Status;
 
 class Display {
  public:
@@ -26,6 +26,8 @@ class Display {
   void DrawForecastLines();
   void DrawForecast(const Status& status, const Rectangle& bounds);
   void DrawForecasts();
+  void DrawAQIMeter(const Point& tl, AQICategory category);
+  void DrawArrow(const Point& tip, uint8_t color);
 
   bool display_begun_;
   Adafruit_IL91874 display_;

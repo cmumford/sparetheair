@@ -6,8 +6,7 @@
 
 namespace sta {
 
-// Uses a type (int) for unit testing because ArduinoUnit does not support
-// enumerations.
+// Keep these in order from best to worst.
 enum class AQICategory : int {
   None = 0,
   Good = 1,
