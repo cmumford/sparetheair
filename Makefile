@@ -4,6 +4,7 @@
 
 CLANG_FORMAT=clang-format
 ARDUINO=/Applications/Arduino.app/Contents/MacOS/Arduino
+FONTCONVERT=../Adafruit-GFX-Library/fontconvert/fontconvert
 
 .PHONY: default
 default: verify
@@ -22,3 +23,12 @@ format:
 verify:
 	${ARDUINO} --verify sparetheair/sparetheair.ino
 	${ARDUINO} --verify sparetheair.ino
+
+sparetheair/font_base.h:
+	${FONTCONVERT} fonts/windows_command_prompt.ttf 16 > sparetheair/font_base.h
+
+sparetheair/font_large.h:
+	${FONTCONVERT} fonts/LibreBaskerville-Bold.ttf 28 > sparetheair/font_large.h
+
+.PHONY: fonts
+fonts: sparetheair/font_base.h sparetheair/font_large.h
