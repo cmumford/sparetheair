@@ -3,6 +3,7 @@
 # This code is licensed under MIT license (see LICENSE for details)
 
 CLANG_FORMAT=clang-format
+ARDUINO=/Applications/Arduino.app/Contents/MacOS/Arduino
 
 .PHONY: default
 default: run
@@ -25,3 +26,7 @@ format:
 		lib/sparetheair.cpp \
 		lib/sparetheair.h \
 		sparetheair.ino
+
+.PHONY: verify
+verify:
+	${ARDUINO} --verify sparetheair.ino
