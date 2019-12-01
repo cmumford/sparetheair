@@ -68,8 +68,8 @@ const uint16_t kRedColor = EPD_RED;
 // Just for debugging.
 const bool kDrawBorders = false;
 
-const int kNormalFontHeight = 18;
-const int kLargeFontHeight = 50;
+const int kNormalFontHeight = 14;
+const int kLargeFontHeight = 36;
 
 String GetDayOfWeekAbbrev(const String& dow) {
   return dow.substring(0, 3);
