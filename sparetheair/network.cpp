@@ -182,7 +182,7 @@ String Network::ExtractDayOfWeek(const String& str) {
 //
 // static
 RegionValues Network::ExtractRegionValues(const String& region_data,
-                                              const String& region_name) {
+                                          const String& region_name) {
   RegionValues values;
 
   int region_idx = region_data.indexOf(region_name);

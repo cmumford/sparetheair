@@ -3,54 +3,14 @@
 
 #include <WiFi.h>
 
+#include "arduino_secrets.h"
 #include "sparetheair/network.cpp"
 #include "sparetheair/network.h"
-#include "arduino_secrets.h"
 
 using sta::Network;
 
 namespace {
 
-struct Point {
-  int x;
-  int y;
-};
-
-struct Size {
-  int width;
-  int height;
-};
-
-struct Rectangle {
-  Point tl;
-  Point br;
-
-  int right() const { return br.x; }
-  int bottom() const { return br.y; }
-};
-
-const Size kEPaperSize = {264, 176};
-
-const Rectangle kEPaperBounds = {
-    Point({0, 0}), Point({kEPaperSize.width - 1, kEPaperSize.height - 1})};
-const Rectangle kTodayBounds = {Point({0, 0}),
-                                Point({kEPaperBounds.right(), 88})};
-const int kForecastWidth = kEPaperSize.width / 3;
-// There are 4 forecast sections so 3 dividers between them.
-const int kDividers[sta::kNumStatusDays - 1] = {
-    kEPaperSize.width * 1 / 4, kEPaperSize.width * 2 / 4,
-    kEPaperSize.width * 3 / 4,
-};
-const Rectangle kForecastBounds[sta::kNumStatusDays] = {
-    {Point({0 * kForecastWidth, kTodayBounds.bottom()}),
-     Point({kDividers[0] - 1, kEPaperBounds.bottom()})},
-    {Point({kDividers[0], kTodayBounds.bottom()}),
-     Point({kDividers[1] - 1, kEPaperBounds.bottom()})},
-    {Point({kDividers[1], kTodayBounds.bottom()}),
-     Point({kDividers[2] - 1, kEPaperBounds.bottom()})},
-    {Point({kDividers[2], kTodayBounds.bottom()}),
-     Point({kEPaperBounds.right(), kEPaperBounds.bottom()})},
-};
 char kWiFiSSID[] = SECRET_SSID;
 char kWiFiPassword[] = SECRET_WIFI_PASSWORD;
 
@@ -62,8 +22,6 @@ const int kLEDPin = 2;
 void setup() {
   Serial.begin(115200);
   pinMode(kLEDPin, OUTPUT);
-  if (&kForecastBounds[0] != 0)
-    Serial.println("Ignore unused variables");
 }
 
 // Connect to WiFi. Will flash the LED while waiting to connect.

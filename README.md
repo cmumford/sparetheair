@@ -33,4 +33,4 @@ Make sure the "ESP32 Dev Module" board is selected.
 This project has two Arduino sketches:
 
 1. main.ino (main app sketch).
-2. sparetheair/unit_tests.ino (unit test sketch).
+2. sparetheair/sparetheair.ino (unit test sketch).

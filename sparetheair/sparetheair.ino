@@ -4,6 +4,7 @@
 #include <ArduinoUnit.h>
 #include <ArduinoUnitMock.h>
 
+#include "display.h"
 #include "network.h"
 
 const char k_today_no_alert_response[] =
@@ -114,10 +115,11 @@ const char kRegionData[] =
     "South and Central Bay - AQI: 50, Pollutant: PM2.5\n"
     "Santa Clara Valley - AQI: 55, Pollutant: PM2.6";
 
-using sta::RegionValues;
-using sta::Network;
-using sta::Status;
 using sta::AQICategory;
+using sta::Display;
+using sta::Network;
+using sta::RegionValues;
+using sta::Status;
 
 // ArduinoUnit can't handle enumerations, so cast to integer.
 int CatToInt(AQICategory cat) {
@@ -142,9 +144,8 @@ test(parseAQIName) {
               CatToInt(AQICategory::Good));
   assertEqual(CatToInt(Network::ParseAQIName("Moderate")),
               CatToInt(AQICategory::Moderate));
-  assertEqual(
-      CatToInt(Network::ParseAQIName("Unhealthy for Sensitive Groups")),
-      CatToInt(AQICategory::UnhealthyForSensitiveGroups));
+  assertEqual(CatToInt(Network::ParseAQIName("Unhealthy for Sensitive Groups")),
+              CatToInt(AQICategory::UnhealthyForSensitiveGroups));
   assertEqual(CatToInt(Network::ParseAQIName("Unhealthy")),
               CatToInt(AQICategory::Unhealthy));
   assertEqual(CatToInt(Network::ParseAQIName("Very Unhealthy")),
@@ -154,8 +155,7 @@ test(parseAQIName) {
 
   assertEqual(CatToInt(Network::ParseAQIName("InvalidText")),
               CatToInt(AQICategory::None));
-  assertEqual(CatToInt(Network::ParseAQIName("")),
-              CatToInt(AQICategory::None));
+  assertEqual(CatToInt(Network::ParseAQIName("")), CatToInt(AQICategory::None));
 }
 
 test(parseAQICategoryValue) {
@@ -259,7 +259,7 @@ test(parseForecast) {
 test(fullFetch) {
   Network::Reset();
 
-  // Sumulate doing a full forecast/alert fetch.
+  // Simulate doing a full forecast/alert fetch.
   Network::ParseAlert(k_today_no_alert_response);
   Network::ParseForecast(k_forecast_response);
   Network::MergeAlert();
@@ -283,6 +283,18 @@ test(failedFetch) {
   assertEqual(today.aqi_val, -1);
   assertEqual(CatToInt(today.aqi_category), CatToInt(AQICategory::None));
   assertEqual(today.pollutant, "");
+}
+
+test(draw) {
+  Network::Reset();
+
+  // Simulate doing a full forecast/alert fetch.
+  Network::ParseAlert(k_today_no_alert_response);
+  Network::ParseForecast(k_forecast_response);
+  Network::MergeAlert();
+
+  Display display;
+  display.Draw();
 }
 
 void setup() {
