@@ -22,11 +22,12 @@ clean:
 .PHONY: format
 format:
 	${CLANG_FORMAT} -i \
-		lib/lib.ino \
-		lib/sparetheair.cpp \
-		lib/sparetheair.h \
-		sparetheair.ino
+		sparetheair/unit_tests.ino \
+		sparetheair/network.cpp \
+		sparetheair/network.h \
+		main.ino
 
 .PHONY: verify
 verify:
-	${ARDUINO} --verify sparetheair.ino
+	${ARDUINO} --verify main.ino
+	${ARDUINO} --verify sparetheair/unit_tests.ino

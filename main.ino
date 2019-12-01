@@ -3,8 +3,8 @@
 
 #include <WiFi.h>
 
-#include "lib/sparetheair.cpp"
-#include "lib/sparetheair.h"
+#include "sparetheair/network.cpp"
+#include "sparetheair/network.h"
 #include "arduino_secrets.h"
 
 using sta::SpareTheAir;

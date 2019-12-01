@@ -4,7 +4,7 @@
 #include <ArduinoUnit.h>
 #include <ArduinoUnitMock.h>
 
-#include "sparetheair.h"
+#include "network.h"
 
 const char k_today_no_alert_response[] =
     "﻿<?xml version=\"1.0\" encoding=\"utf-8\"?><rss version=\"2.0\">\n"
