@@ -17,6 +17,18 @@ Adafruit [2.7" Tri-Color eInk / ePaper Display with SRAM](https://www.adafruit.c
 4. Make sure the pyserial Python 2 module is installed. i.e. `sudo apt-get install python-serial`
    or pip equivalent.
 
+## Pinouts
+
+| ESP32 Pin | eInk Display Pin | Description         |
+|:---------:|:----------------:|---------------------|
+| 5V        | VIN              | 5V power            |
+| GND       | GND              | Ground              |
+| GPIO 18   | SCK              | Serial Clock        |
+| GPIO 19   | MISO             | Master In Slave Out |
+| GPIO 23   | MOSI             | Master Out Slave In |
+| GPIO 25   | ECS              | EInk Chip Select    |
+| GPIO 26   | D/C              | EInk Data/Command   |
+
 ## Building
 
 This project uses the following Arduino libraries.
