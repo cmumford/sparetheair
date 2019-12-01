@@ -1,12 +1,12 @@
 // Copyright 2019 Christopher Mumford
 // This code is licensed under MIT license (see LICENSE for details)
 
-#ifndef _SPARETHEAIR_H_
-#define _SPARETHEAIR_H_
+#ifndef SPARETHEAIR_NETWORK_H_
+#define SPARETHEAIR_NETWORK_H_
 
 namespace sta {
 
-// Uses a type (int) for unit testing because ArduinoUnit can't deal with
+// Uses a type (int) for unit testing because ArduinoUnit does not support
 // enumerations.
 enum class AQICategory : int {
   None = 0,
@@ -51,16 +51,16 @@ struct RegionValues {
   String pollutant;
 };
 
-// The maximum number of status days returned by SpareTheAir::status().
+// The maximum number of status days returned by Network::status().
 const int kNumStatusDays = 4;
 
-class SpareTheAir {
+class Network {
  public:
   // Fetch the alert/forecasts from the network. Returns 0 if successful.
   static int Fetch();
 
-  SpareTheAir() = delete;
-  ~SpareTheAir() = delete;
+  Network() = delete;
+  ~Network() = delete;
 
   // Index 0 is always today, and index 1 is tomorrow, etc.
   static const Status& status(int idx);
@@ -96,4 +96,4 @@ class SpareTheAir {
 
 }  // namespace sta
 
-#endif  // _SPARETHEAIR_H_
+#endif  // SPARETHEAIR_NETWORK_H_

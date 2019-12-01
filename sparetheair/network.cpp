@@ -85,13 +85,13 @@ void XML_ForecastCallback(uint8_t status_flags,
   Status& forecast = g_forecasts[g_parse_channel_item_idx];
   if (!strcasecmp(tag_name, "/rss/channel/item/title")) {
     forecast.date_full = data;
-    forecast.day_of_week = SpareTheAir::ExtractDayOfWeek(forecast.date_full);
+    forecast.day_of_week = Network::ExtractDayOfWeek(forecast.date_full);
   } else if (!strcasecmp(tag_name, "/rss/channel/item/description")) {
-    RegionValues values = SpareTheAir::ExtractRegionValues(data, kRegion);
-    AQICategory category = SpareTheAir::ParseAQIName(values.aqi);
+    RegionValues values = Network::ExtractRegionValues(data, kRegion);
+    AQICategory category = Network::ParseAQIName(values.aqi);
     if (category == AQICategory::None) {
       forecast.aqi_val = atoi(values.aqi.c_str());
-      forecast.aqi_category = SpareTheAir::AQIValueToCategory(forecast.aqi_val);
+      forecast.aqi_category = Network::AQIValueToCategory(forecast.aqi_val);
     } else {
       forecast.aqi_category = category;
     }
@@ -107,7 +107,7 @@ void Status::Reset() {
 }
 
 // static
-int SpareTheAir::Fetch() {
+int Network::Fetch() {
   Reset();
   int err = FetchAlert();
   if (!err) {
@@ -122,7 +122,7 @@ int SpareTheAir::Fetch() {
 }
 
 // static
-int SpareTheAir::FetchAlert() {
+int Network::FetchAlert() {
   HttpFetchResult result = DoHTTPGet(kAlertUrl);
   if (result.httpCode != HTTP_CODE_OK)
     return result.httpCode;
@@ -132,7 +132,7 @@ int SpareTheAir::FetchAlert() {
 }
 
 // static
-void SpareTheAir::ParseAlert(const String& xmlString) {
+void Network::ParseAlert(const String& xmlString) {
   TinyXML xml;
   xml.init((uint8_t*)g_xml_parse_buffer, sizeof(g_xml_parse_buffer),
            &XML_Alertcallback);
@@ -144,7 +144,7 @@ void SpareTheAir::ParseAlert(const String& xmlString) {
 }
 
 // static
-int SpareTheAir::FetchForecast() {
+int Network::FetchForecast() {
   HttpFetchResult result = DoHTTPGet(kForecastUrl);
   if (result.httpCode != HTTP_CODE_OK)
     return result.httpCode;
@@ -154,7 +154,7 @@ int SpareTheAir::FetchForecast() {
 }
 
 // static
-void SpareTheAir::ParseForecast(const String& xmlString) {
+void Network::ParseForecast(const String& xmlString) {
   TinyXML xml;
   xml.init((uint8_t*)g_xml_parse_buffer, sizeof(g_xml_parse_buffer),
            &XML_ForecastCallback);
@@ -164,7 +164,7 @@ void SpareTheAir::ParseForecast(const String& xmlString) {
 }
 
 // static
-String SpareTheAir::ExtractDayOfWeek(const String& str) {
+String Network::ExtractDayOfWeek(const String& str) {
   // This is the format used in the forecast item title
   const int kPrefixLen = 32;
   int idx = str.indexOf("BAAQMD Air Quality Forecast for ");
@@ -181,7 +181,7 @@ String SpareTheAir::ExtractDayOfWeek(const String& str) {
 // "Santa Clara Valley - AQI: 55, Pollutant: PM2.6"
 //
 // static
-RegionValues SpareTheAir::ExtractRegionValues(const String& region_data,
+RegionValues Network::ExtractRegionValues(const String& region_data,
                                               const String& region_name) {
   RegionValues values;
 
@@ -215,7 +215,7 @@ RegionValues SpareTheAir::ExtractRegionValues(const String& region_data,
 }
 
 // static
-const Status& SpareTheAir::status(int idx) {
+const Status& Network::status(int idx) {
   if (g_today_idx == -1)
     return idx == 0 ? g_today : g_empty_status;
   idx += g_today_idx;
@@ -225,17 +225,17 @@ const Status& SpareTheAir::status(int idx) {
 }
 
 // static
-const Status& SpareTheAir::forecast(int idx) {
+const Status& Network::forecast(int idx) {
   return g_forecasts[idx];
 }
 
 // static
-const Status& SpareTheAir::AlertStatus() {
+const Status& Network::AlertStatus() {
   return g_today;
 }
 
 // static
-void SpareTheAir::Reset() {
+void Network::Reset() {
   g_parse_channel_item_idx = 0;
   g_today_idx = -1;
   for (int i = 0; i < kMaxNumEntries; i++)
@@ -243,7 +243,7 @@ void SpareTheAir::Reset() {
 }
 
 // static
-AQICategory SpareTheAir::ParseAQIName(const String& name) {
+AQICategory Network::ParseAQIName(const String& name) {
   if (name == "Good")
     return AQICategory::Good;
   if (name == "Moderate")
@@ -260,7 +260,7 @@ AQICategory SpareTheAir::ParseAQIName(const String& name) {
 }
 
 // static
-const char* SpareTheAir::AQICategoryAbbrev(AQICategory category) {
+const char* Network::AQICategoryAbbrev(AQICategory category) {
   switch (category) {
     case AQICategory::Good:
       return "G";
@@ -281,7 +281,7 @@ const char* SpareTheAir::AQICategoryAbbrev(AQICategory category) {
 }
 
 // static
-AQICategory SpareTheAir::AQIValueToCategory(int value) {
+AQICategory Network::AQIValueToCategory(int value) {
   if (value < 0)
     return AQICategory::None;
   if (value <= 50)
@@ -303,7 +303,7 @@ AQICategory SpareTheAir::AQIValueToCategory(int value) {
 // into the corresponding forecast entry.
 //
 // static
-void SpareTheAir::MergeAlert() {
+void Network::MergeAlert() {
   g_today_idx = -1;
   if (g_today.day_of_week == "")
     return;

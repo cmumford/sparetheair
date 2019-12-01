@@ -115,7 +115,7 @@ const char kRegionData[] =
     "Santa Clara Valley - AQI: 55, Pollutant: PM2.6";
 
 using sta::RegionValues;
-using sta::SpareTheAir;
+using sta::Network;
 using sta::Status;
 using sta::AQICategory;
 
@@ -125,106 +125,106 @@ int CatToInt(AQICategory cat) {
 }
 
 test(dayOfWeek) {
-  SpareTheAir::Reset();
+  Network::Reset();
   assertEqual(
-      SpareTheAir::ExtractDayOfWeek("BAAQMD Air Quality Forecast for Friday"),
+      Network::ExtractDayOfWeek("BAAQMD Air Quality Forecast for Friday"),
       "Friday");
-  assertEqual(SpareTheAir::ExtractDayOfWeek("Saturday, November 23, 2019"),
+  assertEqual(Network::ExtractDayOfWeek("Saturday, November 23, 2019"),
               "Saturday");
-  assertEqual(SpareTheAir::ExtractDayOfWeek("Invalid date."), "");
-  assertEqual(SpareTheAir::ExtractDayOfWeek(""), "");
-  assertEqual(SpareTheAir::ExtractDayOfWeek("BAAQMD Air Quality Forecast for "),
+  assertEqual(Network::ExtractDayOfWeek("Invalid date."), "");
+  assertEqual(Network::ExtractDayOfWeek(""), "");
+  assertEqual(Network::ExtractDayOfWeek("BAAQMD Air Quality Forecast for "),
               "");
 }
 
 test(parseAQIName) {
-  assertEqual(CatToInt(SpareTheAir::ParseAQIName("Good")),
+  assertEqual(CatToInt(Network::ParseAQIName("Good")),
               CatToInt(AQICategory::Good));
-  assertEqual(CatToInt(SpareTheAir::ParseAQIName("Moderate")),
+  assertEqual(CatToInt(Network::ParseAQIName("Moderate")),
               CatToInt(AQICategory::Moderate));
   assertEqual(
-      CatToInt(SpareTheAir::ParseAQIName("Unhealthy for Sensitive Groups")),
+      CatToInt(Network::ParseAQIName("Unhealthy for Sensitive Groups")),
       CatToInt(AQICategory::UnhealthyForSensitiveGroups));
-  assertEqual(CatToInt(SpareTheAir::ParseAQIName("Unhealthy")),
+  assertEqual(CatToInt(Network::ParseAQIName("Unhealthy")),
               CatToInt(AQICategory::Unhealthy));
-  assertEqual(CatToInt(SpareTheAir::ParseAQIName("Very Unhealthy")),
+  assertEqual(CatToInt(Network::ParseAQIName("Very Unhealthy")),
               CatToInt(AQICategory::VeryUnhealthy));
-  assertEqual(CatToInt(SpareTheAir::ParseAQIName("Hazardous")),
+  assertEqual(CatToInt(Network::ParseAQIName("Hazardous")),
               CatToInt(AQICategory::Hazardous));
 
-  assertEqual(CatToInt(SpareTheAir::ParseAQIName("InvalidText")),
+  assertEqual(CatToInt(Network::ParseAQIName("InvalidText")),
               CatToInt(AQICategory::None));
-  assertEqual(CatToInt(SpareTheAir::ParseAQIName("")),
+  assertEqual(CatToInt(Network::ParseAQIName("")),
               CatToInt(AQICategory::None));
 }
 
 test(parseAQICategoryValue) {
-  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(0)),
+  assertEqual(CatToInt(Network::AQIValueToCategory(0)),
               CatToInt(AQICategory::Good));
-  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(10)),
+  assertEqual(CatToInt(Network::AQIValueToCategory(10)),
               CatToInt(AQICategory::Good));
-  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(51)),
+  assertEqual(CatToInt(Network::AQIValueToCategory(51)),
               CatToInt(AQICategory::Moderate));
-  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(100)),
+  assertEqual(CatToInt(Network::AQIValueToCategory(100)),
               CatToInt(AQICategory::Moderate));
-  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(101)),
+  assertEqual(CatToInt(Network::AQIValueToCategory(101)),
               CatToInt(AQICategory::UnhealthyForSensitiveGroups));
-  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(150)),
+  assertEqual(CatToInt(Network::AQIValueToCategory(150)),
               CatToInt(AQICategory::UnhealthyForSensitiveGroups));
-  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(151)),
+  assertEqual(CatToInt(Network::AQIValueToCategory(151)),
               CatToInt(AQICategory::Unhealthy));
-  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(200)),
+  assertEqual(CatToInt(Network::AQIValueToCategory(200)),
               CatToInt(AQICategory::Unhealthy));
-  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(201)),
+  assertEqual(CatToInt(Network::AQIValueToCategory(201)),
               CatToInt(AQICategory::VeryUnhealthy));
-  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(300)),
+  assertEqual(CatToInt(Network::AQIValueToCategory(300)),
               CatToInt(AQICategory::VeryUnhealthy));
-  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(301)),
+  assertEqual(CatToInt(Network::AQIValueToCategory(301)),
               CatToInt(AQICategory::Hazardous));
-  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(600)),
+  assertEqual(CatToInt(Network::AQIValueToCategory(600)),
               CatToInt(AQICategory::Hazardous));
 
-  assertEqual(CatToInt(SpareTheAir::AQIValueToCategory(-1)),
+  assertEqual(CatToInt(Network::AQIValueToCategory(-1)),
               CatToInt(AQICategory::None));
 }
 
 test(aqiCategoryAbbrev) {
-  assertEqual(SpareTheAir::AQICategoryAbbrev(AQICategory::Good), "G");
-  assertEqual(SpareTheAir::AQICategoryAbbrev(AQICategory::Moderate), "M");
+  assertEqual(Network::AQICategoryAbbrev(AQICategory::Good), "G");
+  assertEqual(Network::AQICategoryAbbrev(AQICategory::Moderate), "M");
   assertEqual(
-      SpareTheAir::AQICategoryAbbrev(AQICategory::UnhealthyForSensitiveGroups),
+      Network::AQICategoryAbbrev(AQICategory::UnhealthyForSensitiveGroups),
       "USG");
-  assertEqual(SpareTheAir::AQICategoryAbbrev(AQICategory::Unhealthy), "U");
-  assertEqual(SpareTheAir::AQICategoryAbbrev(AQICategory::VeryUnhealthy), "VU");
-  assertEqual(SpareTheAir::AQICategoryAbbrev(AQICategory::Hazardous), "H");
-  assertEqual(SpareTheAir::AQICategoryAbbrev(AQICategory::None), "?");
+  assertEqual(Network::AQICategoryAbbrev(AQICategory::Unhealthy), "U");
+  assertEqual(Network::AQICategoryAbbrev(AQICategory::VeryUnhealthy), "VU");
+  assertEqual(Network::AQICategoryAbbrev(AQICategory::Hazardous), "H");
+  assertEqual(Network::AQICategoryAbbrev(AQICategory::None), "?");
 }
 
 test(regionValues) {
-  SpareTheAir::Reset();
+  Network::Reset();
 
   RegionValues values =
-      SpareTheAir::ExtractRegionValues(kRegionData, "Eastern District");
+      Network::ExtractRegionValues(kRegionData, "Eastern District");
   assertEqual(values.name, "Eastern District");
   assertEqual(values.aqi, "53");
   assertEqual(values.pollutant, "PM2.5");
 
-  values = SpareTheAir::ExtractRegionValues(kRegionData, "Santa Clara Valley");
+  values = Network::ExtractRegionValues(kRegionData, "Santa Clara Valley");
   assertEqual(values.name, "Santa Clara Valley");
   assertEqual(values.aqi, "55");
   assertEqual(values.pollutant, "PM2.6");
 
-  values = SpareTheAir::ExtractRegionValues(kRegionData, "InvalidName");
+  values = Network::ExtractRegionValues(kRegionData, "InvalidName");
   assertEqual(values.name, "");
   assertEqual(values.aqi, "");
   assertEqual(values.pollutant, "");
 }
 
 test(parseAlert) {
-  SpareTheAir::Reset();
-  SpareTheAir::ParseAlert(k_today_no_alert_response);
+  Network::Reset();
+  Network::ParseAlert(k_today_no_alert_response);
 
-  const Status& today = SpareTheAir::AlertStatus();
+  const Status& today = Network::AlertStatus();
   assertEqual(today.alert_status, "No Alert");
   assertEqual(today.date_full, "Saturday, November 23, 2019");
   assertEqual(today.day_of_week, "Saturday");
@@ -235,10 +235,10 @@ test(parseAlert) {
 }
 
 test(parseForecast) {
-  SpareTheAir::Reset();
-  SpareTheAir::ParseForecast(k_forecast_response);
+  Network::Reset();
+  Network::ParseForecast(k_forecast_response);
 
-  const Status& first = SpareTheAir::forecast(0);
+  const Status& first = Network::forecast(0);
   // First two only come from the alert.
   assertEqual(first.alert_status, "");
   assertEqual(first.date_full, "BAAQMD Air Quality Forecast for Friday");
@@ -247,7 +247,7 @@ test(parseForecast) {
   assertEqual(CatToInt(first.aqi_category), CatToInt(AQICategory::Moderate));
   assertEqual(first.pollutant, "PM2.5");
 
-  const Status& second = SpareTheAir::forecast(1);
+  const Status& second = Network::forecast(1);
   assertEqual(second.alert_status, "");
   assertEqual(second.date_full, "BAAQMD Air Quality Forecast for Saturday");
   assertEqual(second.day_of_week, "Saturday");
@@ -257,14 +257,14 @@ test(parseForecast) {
 }
 
 test(fullFetch) {
-  SpareTheAir::Reset();
+  Network::Reset();
 
   // Sumulate doing a full forecast/alert fetch.
-  SpareTheAir::ParseAlert(k_today_no_alert_response);
-  SpareTheAir::ParseForecast(k_forecast_response);
-  SpareTheAir::MergeAlert();
+  Network::ParseAlert(k_today_no_alert_response);
+  Network::ParseForecast(k_forecast_response);
+  Network::MergeAlert();
 
-  const Status& today = SpareTheAir::status(0);
+  const Status& today = Network::status(0);
   assertEqual(today.alert_status, "No Alert");
   assertEqual(today.date_full, "Saturday, November 23, 2019");
   assertEqual(today.day_of_week, "Saturday");
@@ -275,8 +275,8 @@ test(fullFetch) {
 }
 
 test(failedFetch) {
-  SpareTheAir::Reset();
-  const Status& today = SpareTheAir::status(0);
+  Network::Reset();
+  const Status& today = Network::status(0);
   assertEqual(today.alert_status, "");
   assertEqual(today.date_full, "");
   assertEqual(today.day_of_week, "");

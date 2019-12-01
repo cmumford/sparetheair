@@ -29,5 +29,5 @@ format:
 
 .PHONY: verify
 verify:
-	${ARDUINO} --verify main.ino
 	${ARDUINO} --verify sparetheair/unit_tests.ino
+	${ARDUINO} --verify main.ino

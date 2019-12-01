@@ -7,7 +7,7 @@
 #include "sparetheair/network.h"
 #include "arduino_secrets.h"
 
-using sta::SpareTheAir;
+using sta::Network;
 
 namespace {
 
@@ -105,7 +105,7 @@ int FetchStatus() {
     return err;
   }
   digitalWrite(kLEDPin, HIGH);
-  err = SpareTheAir::Fetch();
+  err = Network::Fetch();
   DisconnectWiFi();
   DrawStatus();
   Serial.println("Successfully refreshed status");
