@@ -17,6 +17,7 @@ format:
 		sparetheair/display.h \
 		sparetheair/network.cpp \
 		sparetheair/network.h \
+		sparetheair/size.h \
 		main.ino
 
 .PHONY: verify

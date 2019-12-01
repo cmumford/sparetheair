@@ -2,6 +2,9 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include "display.h"
+#include "font_base.h"
+#include "font_large.h"
+#include "logo.h"
 #include "network.h"
 #include "size.h"
 
@@ -65,6 +68,9 @@ const uint16_t kRedColor = EPD_RED;
 // Just for debugging.
 const bool kDrawBorders = false;
 
+const int kNormalFontHeight = 18;
+const int kLargeFontHeight = 50;
+
 String GetDayOfWeekAbbrev(const String& dow) {
   return dow.substring(0, 3);
 }
@@ -101,9 +107,6 @@ void Display::Draw() {
   }
   display_.clearBuffer();
 
-  if (&kForecastBounds[0] != 0)
-    Serial.println("Ignore unused variables");
-
   DrawLogo();
   DrawTodayEntry(Network::status(0));
   DrawForecastLines();
@@ -137,9 +140,10 @@ void Display::DrawTodayEntry(const Status& status) {
                       kTodayBounds.width(), kTodayBounds.height(), kRedColor);
   }
   const int kMargin = 4;
-  DrawString(status.date_full, Point({kMargin, kMargin}), kBlackColor);
+  DrawString(status.date_full, Point({kMargin, kMargin + kNormalFontHeight}),
+             kBlackColor);
 
-  DrawString(status.alert_status, Point({kMargin + 8, 50}),
+  DrawString(status.alert_status, Point({kMargin + 8, 50 + kNormalFontHeight}),
              status.AlertInEffect() ? kRedColor : kBlackColor);
 
   DrawAQIMeter({kTodayBounds.right() - 2 * kMargin - kAQIMeterSize.width -
@@ -166,18 +170,20 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
   display_.setFont(&windows_command_prompt16pt7b);
   const int kMargin = 4;
   DrawString(GetDayOfWeekAbbrev(status.day_of_week),
-             Point({bounds.left() + kMargin, bounds.top() + kMargin}),
+             Point({bounds.left() + kMargin,
+                    bounds.top() + kMargin + kNormalFontHeight}),
              kBlackColor);
 
   display_.setFont(&LibreBaskerville_Bold28pt7b);
-  const int kLineHeight = 14;
+  const int kLineHeight = kNormalFontHeight;
   String aqi_str = status.aqi_val != -1
                        ? String(status.aqi_val)
                        : Network::AQICategoryAbbrev(status.aqi_category);
 
   DrawString(
       aqi_str,
-      Point({bounds.left() + kMargin, bounds.top() + kMargin + kLineHeight}),
+      Point({bounds.left() + kMargin, bounds.top() + kMargin + kLineHeight +
+                                          kMargin + kLargeFontHeight}),
       kBlackColor);
 
   DrawAQIMeter({bounds.right() - kMargin - kAQIMeterSize.width,
