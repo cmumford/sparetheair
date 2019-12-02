@@ -69,10 +69,19 @@ const uint16_t kRedColor = EPD_RED;
 const bool kDrawBorders = false;
 
 const int kNormalFontHeight = 14;
-const int kLargeFontHeight = 36;
+const int kLargeFontHeight = 40;
 
 String GetDayOfWeekAbbrev(const String& dow) {
   return dow.substring(0, 3);
+}
+
+// Given "Saturday, November 17, 2019" return
+// "November 17, 2019".
+String GetMonthDayYear(const String& full_date) {
+  int idx = full_date.indexOf(", ");
+  if (idx < 0)
+    return full_date;
+  return full_date.substring(idx + 2);
 }
 
 uint8_t GetPixelColor(int pixel) {
@@ -140,13 +149,15 @@ void Display::DrawTodayEntry(const Status& status) {
                       kTodayBounds.width(), kTodayBounds.height(), kRedColor);
   }
   const int kMargin = 4;
-  DrawString(status.date_full, Point({kMargin, kMargin + kNormalFontHeight}),
+  DrawString(status.day_of_week, Point({kMargin, kMargin + kNormalFontHeight}),
              kBlackColor);
+  DrawString(GetMonthDayYear(status.date_full),
+             Point({kMargin, 2 * (kMargin + kNormalFontHeight)}), kBlackColor);
 
-  DrawString(status.alert_status, Point({kMargin + 8, 50 + kNormalFontHeight}),
+  DrawString(status.alert_status, Point({kMargin + 8, 58 + kNormalFontHeight}),
              status.AlertInEffect() ? kRedColor : kBlackColor);
 
-  DrawAQIMeter({kTodayBounds.right() - 2 * kMargin - kAQIMeterSize.width -
+  DrawAQIMeter({kTodayBounds.right() - 3 * kMargin - kAQIMeterSize.width -
                     kLogoSize.width,
                 20},
                status.aqi_category);
