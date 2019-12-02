@@ -143,7 +143,7 @@ void Display::DrawString(const String& str, const Point& pt, uint16_t color) {
 }
 
 void Display::DrawTodayEntry(const Status& status) {
-  display_.setFont(&windows_command_prompt12pt7b);
+  display_.setFont(&windows_command_prompt11pt7b);
   if (kDrawBorders) {
     display_.drawRect(kTodayBounds.left(), kTodayBounds.top(),
                       kTodayBounds.width(), kTodayBounds.height(), kRedColor);
@@ -178,14 +178,14 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
     display_.drawRect(bounds.left(), bounds.top(), bounds.width(),
                       bounds.height(), kRedColor);
   }
-  display_.setFont(&windows_command_prompt12pt7b);
+  display_.setFont(&windows_command_prompt11pt7b);
   const int kMargin = 4;
   DrawString(GetDayOfWeekAbbrev(status.day_of_week),
              Point({bounds.left() + kMargin,
                     bounds.top() + kMargin + kNormalFontHeight}),
              kBlackColor);
 
-  display_.setFont(&LibreBaskerville_Bold20pt7b);
+  display_.setFont(&LibreBaskerville_Bold18pt7b);
   const int kLineHeight = kNormalFontHeight;
   String aqi_str = status.aqi_val != -1
                        ? String(status.aqi_val)

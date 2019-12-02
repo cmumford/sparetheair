@@ -26,10 +26,10 @@ verify:
 	${ARDUINO} --verify sparetheair.ino
 
 sparetheair/font_base.h: Makefile
-	${FONTCONVERT} fonts/windows_command_prompt.ttf 12 > sparetheair/font_base.h
+	${FONTCONVERT} fonts/windows_command_prompt.ttf 11 > sparetheair/font_base.h
 
 sparetheair/font_large.h: Makefile
-	${FONTCONVERT} fonts/LibreBaskerville-Bold.ttf 20 > sparetheair/font_large.h
+	${FONTCONVERT} fonts/LibreBaskerville-Bold.ttf 18 > sparetheair/font_large.h
 
 .PHONY: fonts
 fonts: sparetheair/font_base.h sparetheair/font_large.h
