@@ -115,11 +115,11 @@ const char kRegionData[] =
     "South and Central Bay - AQI: 50, Pollutant: PM2.5\n"
     "Santa Clara Valley - AQI: 55, Pollutant: PM2.6";
 
-using sta::AQICategory;
-using sta::Display;
-using sta::Network;
-using sta::RegionValues;
-using sta::Status;
+using spare_the_air::AQICategory;
+using spare_the_air::Display;
+using spare_the_air::Network;
+using spare_the_air::RegionValues;
+using spare_the_air::Status;
 
 // ArduinoUnit can't handle enumerations, so cast to integer.
 int CatToInt(AQICategory cat) {

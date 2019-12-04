@@ -7,7 +7,7 @@
 #include "Adafruit_EPD.h"
 #include "network.h"
 
-namespace sta {
+namespace spare_the_air {
 
 struct Point;
 struct Rectangle;
@@ -33,6 +33,6 @@ class Display {
   Adafruit_IL91874 display_;
 };
 
-}  // namespace sta
+}  // namespace spare_the_air
 
 #endif  // SPARETHEAIR_DISPLAY_H_

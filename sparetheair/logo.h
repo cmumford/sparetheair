@@ -3,7 +3,7 @@
 
 #include "size.h"
 
-namespace sta {
+namespace spare_the_air {
 
 const Size kLogoSize = {80, 80};
 
@@ -91,6 +91,6 @@ const uint8_t kLogo[] = {
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 };
 
-}  // namespace sta
+}  // namespace spare_the_air
 
 #endif  // SPARETHEAIR_LOGO_H_

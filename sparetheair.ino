@@ -7,7 +7,7 @@
 #include "sparetheair/network.cpp"
 #include "sparetheair/network.h"
 
-using sta::Network;
+using spare_the_air::Network;
 
 namespace {
 

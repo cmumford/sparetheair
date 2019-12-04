@@ -4,7 +4,7 @@
 #ifndef SPARETHEAIR_NETWORK_H_
 #define SPARETHEAIR_NETWORK_H_
 
-namespace sta {
+namespace spare_the_air {
 
 // Keep these in order from best to worst.
 enum class AQICategory : int {
@@ -93,6 +93,6 @@ class Network {
   static void Reset();
 };
 
-}  // namespace sta
+}  // namespace spare_the_air
 
 #endif  // SPARETHEAIR_NETWORK_H_

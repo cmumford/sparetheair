@@ -4,13 +4,13 @@
 #ifndef SPARETHEAIR_SIZE_H_
 #define SPARETHEAIR_SIZE_H_
 
-namespace sta {
+namespace spare_the_air {
 
 struct Size {
   int width;
   int height;
 };
 
-}  // namespace sta
+}  // namespace spare_the_air
 
 #endif SPARETHEAIR_SIZE_H_

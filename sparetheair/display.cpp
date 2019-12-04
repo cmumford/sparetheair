@@ -8,7 +8,7 @@
 #include "network.h"
 #include "size.h"
 
-namespace sta {
+namespace spare_the_air {
 
 struct Point {
   int x;
@@ -236,4 +236,4 @@ void Display::DrawAQIMeter(const Point& tl, AQICategory category) {
   DrawArrow({tl.x - 2, y}, kBlackColor);
 }
 
-}  // namespace sta
+}  // namespace spare_the_air

@@ -6,7 +6,7 @@
 
 #include "network.h"
 
-namespace sta {
+namespace spare_the_air {
 
 namespace {
 
@@ -320,4 +320,4 @@ void Network::MergeAlert() {
   }
 }
 
-}  // namespace sta
+}  // namespace spare_the_air
