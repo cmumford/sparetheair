@@ -13,4 +13,4 @@ struct Size {
 
 }  // namespace spare_the_air
 
-#endif SPARETHEAIR_SIZE_H_
+#endif  // SPARETHEAIR_SIZE_H_
