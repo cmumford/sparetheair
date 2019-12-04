@@ -191,11 +191,10 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
                        ? String(status.aqi_val)
                        : Network::AQICategoryAbbrev(status.aqi_category);
 
-  DrawString(
-      aqi_str,
-      Point({bounds.left() + kMargin, bounds.top() + kMargin + kLineHeight +
-                                          kMargin + kLargeFontHeight}),
-      kBlackColor);
+  DrawString(aqi_str, Point({bounds.left() + kMargin,
+                             bounds.top() + kMargin + kLineHeight + kMargin +
+                                 kLargeFontHeight}),
+             kBlackColor);
 
   DrawAQIMeter({bounds.right() - kMargin - kAQIMeterSize.width,
                 bounds.bottom() - kMargin - kAQIMeterSize.height},
