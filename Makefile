@@ -12,13 +12,13 @@ default: verify
 .PHONY: format
 format:
 	${CLANG_FORMAT} -i \
-		sparetheair/unit_tests.ino \
+		sparetheair/sparetheair.ino \
 		sparetheair/display.cpp \
 		sparetheair/display.h \
 		sparetheair/network.cpp \
 		sparetheair/network.h \
 		sparetheair/size.h \
-		main.ino
+		sparetheair.ino
 
 .PHONY: verify
 verify:
