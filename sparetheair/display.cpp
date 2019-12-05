@@ -96,6 +96,37 @@ int CatToInt(AQICategory cat) {
   return static_cast<int>(cat);
 }
 
+const GFXglyph* GetGlyph(const GFXfont& font, char ch) {
+  const int offset = static_cast<uint8_t>(ch);
+  if (offset < font.first)
+    return nullptr;
+  return &font.glyph[offset - font.first];
+}
+
+Size GetCharSize(const GFXfont& font, char ch) {
+  const GFXglyph* glyph = GetGlyph(font, ch);
+  if (!glyph)
+    return Size();
+  return Size({glyph->width, glyph->height});
+}
+
+Point GetCharOffset(const GFXfont& font, char ch) {
+  const GFXglyph* glyph = GetGlyph(font, ch);
+  if (!glyph)
+    return Point();
+  return Point({glyph->xOffset, glyph->yOffset});
+}
+
+int StringWidth(const GFXfont& font, const String& str) {
+  int width = 0;
+  for (int i = 0; i < str.length(); i++) {
+    const GFXglyph* glyph = GetGlyph(font, str[i]);
+    if (glyph)
+      width += glyph->xAdvance;
+  }
+  return width;
+}
+
 }  // namespace
 
 Display::Display()
