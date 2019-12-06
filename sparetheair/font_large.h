@@ -1,4 +1,4 @@
-const uint8_t LibreBaskerville_Bold18pt7bBitmaps[] PROGMEM = {
+constexpr uint8_t LibreBaskerville_Bold18pt7bBitmaps[] PROGMEM = {
   0x77, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x9C, 0xE7, 0x39, 0xCE, 0x73, 0x18,
   0xC0, 0x01, 0xDF, 0xFF, 0xDC, 0xE1, 0xBC, 0xFF, 0x3F, 0xCF, 0xE3, 0xF8,
   0xFE, 0x19, 0x86, 0x61, 0x98, 0x60, 0x00, 0xE0, 0xE0, 0x03, 0x83, 0x00,
@@ -591,7 +591,7 @@ const GFXglyph LibreBaskerville_Bold18pt7bGlyphs[] PROGMEM = {
   {  5866,  11,  34,  12,    1,  -28 },   // 0x7D '}'
   {  5913,  14,   5,  20,    3,  -12 } }; // 0x7E '~'
 
-const GFXfont LibreBaskerville_Bold18pt7b PROGMEM = {
+constexpr GFXfont LibreBaskerville_Bold18pt7b PROGMEM = {
   (uint8_t  *)LibreBaskerville_Bold18pt7bBitmaps,
   (GFXglyph *)LibreBaskerville_Bold18pt7bGlyphs,
   0x20, 0x7E, 43 };

@@ -15,10 +15,11 @@ struct HttpFetchResult {
   String response;
 };
 
-const char kAlertUrl[] = "http://www.baaqmd.gov/Feeds/AlertRSS.aspx";
-const char kForecastUrl[] = "http://www.baaqmd.gov/Feeds/AirForecastRSS.aspx";
-const char kRegion[] = "Santa Clara Valley";
-const int kMaxNumEntries = 6;
+constexpr const char kAlertUrl[] = "http://www.baaqmd.gov/Feeds/AlertRSS.aspx";
+constexpr const char kForecastUrl[] =
+    "http://www.baaqmd.gov/Feeds/AirForecastRSS.aspx";
+constexpr const char kRegion[] = "Santa Clara Valley";
+constexpr const int kMaxNumEntries = 6;
 
 // Buffer used by the XML parser.
 uint8_t g_xml_parse_buffer[512];

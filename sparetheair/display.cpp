@@ -36,16 +36,16 @@ namespace {
 #define EPD_RESET 12  // Share with microcontroller Reset!
 #define EPD_BUSY -1   // Not use a pin (unused on 2.7" display).
 
-const Size kEPaperSize = {264, 176};
+constexpr const Size kEPaperSize = {264, 176};
 
-const Rectangle kEPaperBounds = {
+constexpr const Rectangle kEPaperBounds = {
     Point({0, 0}), Point({kEPaperSize.width - 1, kEPaperSize.height - 1})};
 const Rectangle kTodayBounds = {Point({0, 0}),
                                 Point({kEPaperBounds.right(), 88})};
-const int kForecastWidth = kEPaperSize.width / 3;
+constexpr const int kForecastWidth = kEPaperSize.width / 3;
 
 // There are 3 forecast sections so 2 dividers between them.
-const int kDividers[kNumStatusDays - 1] = {
+constexpr const int kDividers[kNumStatusDays - 1] = {
     kEPaperSize.width * 1 / 3,
     kEPaperSize.width * 2 / 3,
 };
@@ -59,17 +59,14 @@ const Rectangle kForecastBounds[kNumStatusDays - 1] = {
      Point({kEPaperSize.width - 1, kEPaperBounds.bottom()})},
 };
 
-const Size kAQIMeterSize = {10, 6 * 10};
+constexpr const Size kAQIMeterSize = {10, 6 * 10};
 
-const uint16_t kWhiteColor = EPD_WHITE;
-const uint16_t kBlackColor = EPD_BLACK;
-const uint16_t kRedColor = EPD_RED;
+constexpr const uint16_t kWhiteColor = EPD_WHITE;
+constexpr const uint16_t kBlackColor = EPD_BLACK;
+constexpr const uint16_t kRedColor = EPD_RED;
 
 // Just for debugging.
-const bool kDrawBorders = false;
-
-const int kNormalFontHeight = 14;
-const int kLargeFontHeight = 40;
+constexpr const bool kDrawBorders = false;
 
 String GetDayOfWeekAbbrev(const String& dow) {
   return dow.substring(0, 3);
@@ -97,10 +94,9 @@ int CatToInt(AQICategory cat) {
 }
 
 const GFXglyph* GetGlyph(const GFXfont& font, char ch) {
-  const int offset = static_cast<uint8_t>(ch);
-  if (offset < font.first)
+  if (static_cast<uint8_t>(ch) < font.first)
     return nullptr;
-  return &font.glyph[offset - font.first];
+  return &font.glyph[static_cast<uint8_t>(ch) - font.first];
 }
 
 Size GetCharSize(const GFXfont& font, char ch) {
