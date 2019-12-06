@@ -123,6 +123,12 @@ int StringWidth(const GFXfont& font, const String& str) {
   return width;
 }
 
+constexpr const GFXfont& kNormalFont = windows_command_prompt11pt7b;
+constexpr const GFXfont& kLargeFont = LibreBaskerville_Bold18pt7b;
+
+const int g_normal_font_height = GetCharSize(kNormalFont, 'W').height;
+const int g_large_font_height = GetCharSize(kLargeFont, 'W').height;
+
 }  // namespace
 
 Display::Display()
@@ -170,18 +176,20 @@ void Display::DrawString(const String& str, const Point& pt, uint16_t color) {
 }
 
 void Display::DrawTodayEntry(const Status& status) {
-  display_.setFont(&windows_command_prompt11pt7b);
+  display_.setFont(&kNormalFont);
   if (kDrawBorders) {
     display_.drawRect(kTodayBounds.left(), kTodayBounds.top(),
                       kTodayBounds.width(), kTodayBounds.height(), kRedColor);
   }
   const int kMargin = 4;
-  DrawString(status.day_of_week, Point({kMargin, kMargin + kNormalFontHeight}),
-             kBlackColor);
+  DrawString(status.day_of_week,
+             Point({kMargin, kMargin + g_normal_font_height}), kBlackColor);
   DrawString(GetMonthDayYear(status.date_full),
-             Point({kMargin, 2 * (kMargin + kNormalFontHeight)}), kBlackColor);
+             Point({kMargin, 2 * (kMargin + g_normal_font_height)}),
+             kBlackColor);
 
-  DrawString(status.alert_status, Point({kMargin + 8, 58 + kNormalFontHeight}),
+  DrawString(status.alert_status,
+             Point({kMargin + 8, 58 + g_normal_font_height}),
              status.AlertInEffect() ? kRedColor : kBlackColor);
 
   DrawAQIMeter({kTodayBounds.right() - 3 * kMargin - kAQIMeterSize.width -
@@ -205,22 +213,21 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
     display_.drawRect(bounds.left(), bounds.top(), bounds.width(),
                       bounds.height(), kRedColor);
   }
-  display_.setFont(&windows_command_prompt11pt7b);
+  display_.setFont(&kNormalFont);
   const int kMargin = 4;
   DrawString(GetDayOfWeekAbbrev(status.day_of_week),
              Point({bounds.left() + kMargin,
-                    bounds.top() + kMargin + kNormalFontHeight}),
+                    bounds.top() + kMargin + g_normal_font_height}),
              kBlackColor);
 
-  display_.setFont(&LibreBaskerville_Bold18pt7b);
-  const int kLineHeight = kNormalFontHeight;
+  display_.setFont(&kLargeFont);
   String aqi_str = status.aqi_val != -1
                        ? String(status.aqi_val)
                        : Network::AQICategoryAbbrev(status.aqi_category);
 
   DrawString(aqi_str, Point({bounds.left() + kMargin,
-                             bounds.top() + kMargin + kLineHeight + kMargin +
-                                 kLargeFontHeight}),
+                             bounds.top() + kMargin + g_normal_font_height +
+                                 kMargin + g_large_font_height}),
              kBlackColor);
 
   DrawAQIMeter({bounds.right() - kMargin - kAQIMeterSize.width,
