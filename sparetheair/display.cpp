@@ -59,6 +59,8 @@ constexpr const GFXfont& kNormalFont = windows_command_prompt11pt7b;
 constexpr const GFXfont& kMediumFont = LibreBaskerville_Bold13pt7b;
 constexpr const GFXfont& kLargeFont = LibreBaskerville_Bold18pt7b;
 
+constexpr const int kArrowWidth = 5;
+
 // Just for debugging.
 constexpr const bool kDrawBorders = false;
 
@@ -214,17 +216,23 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
              Point({bounds.left() + kMargin, string_y}), kBlack);
 
   const String aqi_str = status.aqi_val != -1
-                       ? String(status.aqi_val)
-                       : Network::AQICategoryAbbrev(status.aqi_category);
+                             ? String(status.aqi_val)
+                             : Network::AQICategoryAbbrev(status.aqi_category);
   const GFXfont& kAQIFont = aqi_str.length() > 2 ? kMediumFont : kLargeFont;
   const int kAQIFontHeight = GetCharSize(kAQIFont, 'W').height;
 
-  const int text_right = bounds.right() - kAQIMeterSize.width;
-  int string_x =
-      (bounds.left() + text_right - StringWidth(kAQIFont, aqi_str)) / 2;
-  string_y += kMargin + 10 + kAQIFontHeight;
+  const Rectangle aqi_bounds(
+      {bounds.left(), string_y,
+       bounds.right() - kAQIMeterSize.width - kMargin - kArrowWidth,
+       bounds.bottom()});
+  const Point tl({(aqi_bounds.left() + aqi_bounds.right() -
+                   StringWidth(kAQIFont, aqi_str)) /
+                      2,
+                  (aqi_bounds.top() + aqi_bounds.bottom() +
+                   GetCharSize(kAQIFont, 'W').height) /
+                      2});
   display_.setFont(&kAQIFont);
-  DrawString(aqi_str, Point({string_x, string_y}), kBlack);
+  DrawString(aqi_str, tl, kBlack);
 
   DrawAQIMeter({bounds.right() - kMargin - kAQIMeterSize.width,
                 bounds.bottom() - kMargin - kAQIMeterSize.height},
@@ -238,8 +246,7 @@ void Display::DrawForecasts() {
 }
 
 void Display::DrawArrow(const Point& tip, uint8_t color) {
-  const int kWidth = 4;
-  for (int i = 0; i < kWidth; i++) {
+  for (int i = 0; i < kArrowWidth; i++) {
     for (int y = tip.y - i; y <= tip.y + i; y++) {
       display_.writePixel(tip.x - i, y, color);
     }
