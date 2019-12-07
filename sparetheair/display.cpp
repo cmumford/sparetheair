@@ -3,6 +3,7 @@
 
 #include "display.h"
 #include "font_base.h"
+#include "font_medium.h"
 #include "font_large.h"
 #include "logo.h"
 #include "network.h"
@@ -55,6 +56,7 @@ constexpr const uint16_t kBlack = EPD_BLACK;
 constexpr const uint16_t kRed = EPD_RED;
 
 constexpr const GFXfont& kNormalFont = windows_command_prompt11pt7b;
+constexpr const GFXfont& kMediumFont = LibreBaskerville_Bold15pt7b;
 constexpr const GFXfont& kLargeFont = LibreBaskerville_Bold18pt7b;
 
 // Just for debugging.
@@ -120,7 +122,7 @@ const Rectangle kForecastBounds[kNumStatusDays - 1] = {
 };
 
 const int kNormalFontHeight = GetCharSize(kNormalFont, 'W').height;
-const int kLargeFontHeight = GetCharSize(kLargeFont, 'W').height;
+const int kMediumFontHeight = GetCharSize(kMediumFont, 'W').height;
 
 }  // namespace
 
@@ -180,6 +182,7 @@ void Display::DrawTodayEntry(const Status& status) {
   DrawString(GetMonthDayYear(status.date_full),
              Point({kMargin, 2 * (kMargin + kNormalFontHeight)}), kBlack);
 
+  display_.setFont(&kMediumFont);
   DrawString(status.alert_status, Point({kMargin + 8, 58 + kNormalFontHeight}),
              status.AlertInEffect() ? kRed : kBlack);
 
@@ -211,15 +214,17 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
   DrawString(GetDayOfWeekAbbrev(status.day_of_week),
              Point({bounds.left() + kMargin, string_y}), kBlack);
 
-  display_.setFont(&kLargeFont);
-  String aqi_str = status.aqi_val != -1
+  const String aqi_str = status.aqi_val != -1
                        ? String(status.aqi_val)
                        : Network::AQICategoryAbbrev(status.aqi_category);
+  const GFXfont& kAQIFont = aqi_str.length() > 2 ? kMediumFont : kLargeFont;
+  const int kAQIFontHeight = GetCharSize(kAQIFont, 'W').height;
 
   const int text_right = bounds.right() - kAQIMeterSize.width;
   int string_x =
-      (bounds.left() + text_right - StringWidth(kLargeFont, aqi_str)) / 2;
-  string_y += kMargin + kLargeFontHeight;
+      (bounds.left() + text_right - StringWidth(kAQIFont, aqi_str)) / 2;
+  string_y += kMargin + 10 + kAQIFontHeight;
+  display_.setFont(&kAQIFont);
   DrawString(aqi_str, Point({string_x, string_y}), kBlack);
 
   DrawAQIMeter({bounds.right() - kMargin - kAQIMeterSize.width,

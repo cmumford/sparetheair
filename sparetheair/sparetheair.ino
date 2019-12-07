@@ -101,7 +101,7 @@ const char k_forecast_response[] =
     "Coast and Central Bay - AQI: Moderate, Pollutant: PM2.5.\n"
     "Eastern District - AQI: Good, Pollutant: PM2.5\n"
     "South and Central Bay - AQI: Good, Pollutant: PM2.5\n"
-    "Santa Clara Valley - AQI: Moderate, Pollutant: "
+    "Santa Clara Valley - AQI: Unhealthy for Sensitive Groups, Pollutant: "
     "PM2.5</description></item>\n"
     "\n"
     "</channel>\n"
