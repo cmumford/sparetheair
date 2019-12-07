@@ -56,7 +56,7 @@ constexpr const uint16_t kBlack = EPD_BLACK;
 constexpr const uint16_t kRed = EPD_RED;
 
 constexpr const GFXfont& kNormalFont = windows_command_prompt11pt7b;
-constexpr const GFXfont& kMediumFont = LibreBaskerville_Bold15pt7b;
+constexpr const GFXfont& kMediumFont = LibreBaskerville_Bold13pt7b;
 constexpr const GFXfont& kLargeFont = LibreBaskerville_Bold18pt7b;
 
 // Just for debugging.
@@ -122,7 +122,6 @@ const Rectangle kForecastBounds[kNumStatusDays - 1] = {
 };
 
 const int kNormalFontHeight = GetCharSize(kNormalFont, 'W').height;
-const int kMediumFontHeight = GetCharSize(kMediumFont, 'W').height;
 
 }  // namespace
 
