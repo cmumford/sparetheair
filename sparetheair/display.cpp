@@ -246,7 +246,7 @@ void Display::DrawAQIMeter(const Point& tl, AQICategory category) {
   const int kNumCategories = 6;
   int y = tl.y + kMeterBlockHeight;
   for (int i = 0; i < kNumCategories - 1; i++, y += kMeterBlockHeight)
-    display_.drawLine(tl.x, y, tl.x + kAQIMeterSize.width, y, kBlack);
+    display_.drawLine(tl.x, y, tl.x + kAQIMeterSize.width - 1, y, kBlack);
 
   if (category == AQICategory::None)
     return;
