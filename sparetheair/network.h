@@ -8,13 +8,13 @@ namespace spare_the_air {
 
 // Keep these in order from best to worst.
 enum class AQICategory : int {
-  None = 0,
-  Good = 1,
-  Moderate = 2,
-  UnhealthyForSensitiveGroups = 3,
-  Unhealthy = 4,
-  VeryUnhealthy = 5,
-  Hazardous = 6,
+  Good = 0,
+  Moderate = 1,
+  UnhealthyForSensitiveGroups = 2,
+  Unhealthy = 3,
+  VeryUnhealthy = 4,
+  Hazardous = 5,
+  None = 9,
 };
 
 // Status for a date. This may be the current status or a forecast.
