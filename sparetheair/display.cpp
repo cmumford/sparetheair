@@ -50,9 +50,9 @@ constexpr const int kDividers[kNumStatusDays - 1] = {
 
 constexpr const Size kAQIMeterSize = {10, 6 * 10};
 
-constexpr const uint16_t kWhiteColor = EPD_WHITE;
-constexpr const uint16_t kBlackColor = EPD_BLACK;
-constexpr const uint16_t kRedColor = EPD_RED;
+constexpr const uint16_t kWhite = EPD_WHITE;
+constexpr const uint16_t kBlack = EPD_BLACK;
+constexpr const uint16_t kRed = EPD_RED;
 
 constexpr const GFXfont& kNormalFont = windows_command_prompt11pt7b;
 constexpr const GFXfont& kLargeFont = LibreBaskerville_Bold18pt7b;
@@ -75,10 +75,10 @@ String GetMonthDayYear(const String& full_date) {
 
 uint8_t GetPixelColor(int pixel) {
   if (pixel == 2)
-    return kBlackColor;
+    return kBlack;
   if (pixel == 1)
-    return kRedColor;
-  return kWhiteColor;
+    return kRed;
+  return kWhite;
 }
 
 int CatToInt(AQICategory cat) {
@@ -172,16 +172,16 @@ void Display::DrawTodayEntry(const Status& status) {
   display_.setFont(&kNormalFont);
   if (kDrawBorders) {
     display_.drawRect(kTodayBounds.left(), kTodayBounds.top(),
-                      kTodayBounds.width(), kTodayBounds.height(), kRedColor);
+                      kTodayBounds.width(), kTodayBounds.height(), kRed);
   }
   const int kMargin = 4;
   DrawString(status.day_of_week, Point({kMargin, kMargin + kNormalFontHeight}),
-             kBlackColor);
+             kBlack);
   DrawString(GetMonthDayYear(status.date_full),
-             Point({kMargin, 2 * (kMargin + kNormalFontHeight)}), kBlackColor);
+             Point({kMargin, 2 * (kMargin + kNormalFontHeight)}), kBlack);
 
   DrawString(status.alert_status, Point({kMargin + 8, 58 + kNormalFontHeight}),
-             status.AlertInEffect() ? kRedColor : kBlackColor);
+             status.AlertInEffect() ? kRed : kBlack);
 
   DrawAQIMeter({kTodayBounds.right() - 3 * kMargin - kAQIMeterSize.width -
                     kLogoSize.width,
@@ -191,24 +191,23 @@ void Display::DrawTodayEntry(const Status& status) {
 
 void Display::DrawForecastLines() {
   display_.drawLine(kTodayBounds.left(), kTodayBounds.bottom(),
-                    kTodayBounds.right(), kTodayBounds.bottom(), kBlackColor);
+                    kTodayBounds.right(), kTodayBounds.bottom(), kBlack);
   for (int i = 0; i < kNumStatusDays - 1; i++) {
     const Rectangle fr = kForecastBounds[i];
-    display_.drawLine(fr.right(), fr.top(), fr.right(), fr.bottom(),
-                      kBlackColor);
+    display_.drawLine(fr.right(), fr.top(), fr.right(), fr.bottom(), kBlack);
   }
 }
 
 void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
   if (kDrawBorders) {
     display_.drawRect(bounds.left(), bounds.top(), bounds.width(),
-                      bounds.height(), kRedColor);
+                      bounds.height(), kRed);
   }
   display_.setFont(&kNormalFont);
   const int kMargin = 4;
   int string_y = bounds.top() + kMargin + kNormalFontHeight;
   DrawString(GetDayOfWeekAbbrev(status.day_of_week),
-             Point({bounds.left() + kMargin, string_y}), kBlackColor);
+             Point({bounds.left() + kMargin, string_y}), kBlack);
 
   display_.setFont(&kLargeFont);
   String aqi_str = status.aqi_val != -1
@@ -218,7 +217,7 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
   int string_x =
       (bounds.left() + bounds.right() - StringWidth(kLargeFont, aqi_str)) / 2;
   string_y += kMargin + kLargeFontHeight;
-  DrawString(aqi_str, Point({string_x, string_y}), kBlackColor);
+  DrawString(aqi_str, Point({string_x, string_y}), kBlack);
 
   DrawAQIMeter({bounds.right() - kMargin - kAQIMeterSize.width,
                 bounds.bottom() - kMargin - kAQIMeterSize.height},
@@ -243,11 +242,11 @@ void Display::DrawArrow(const Point& tip, uint8_t color) {
 void Display::DrawAQIMeter(const Point& tl, AQICategory category) {
   const int kMeterBlockHeight = kAQIMeterSize.width;
   display_.drawRect(tl.x, tl.y, kAQIMeterSize.width, kAQIMeterSize.height,
-                    kBlackColor);
+                    kBlack);
   const int kNumCategories = 6;
   int y = tl.y + kMeterBlockHeight;
   for (int i = 0; i < kNumCategories - 1; i++, y += kMeterBlockHeight)
-    display_.drawLine(tl.x, y, tl.x + kAQIMeterSize.width, y, kBlackColor);
+    display_.drawLine(tl.x, y, tl.x + kAQIMeterSize.width, y, kBlack);
 
   if (category == AQICategory::None)
     return;
@@ -256,7 +255,7 @@ void Display::DrawAQIMeter(const Point& tl, AQICategory category) {
   int int_val = CatToInt(category);
   y = tl.y + kAQIMeterSize.height - int_val * kMeterBlockHeight -
       kMeterBlockHeight / 2;
-  DrawArrow({tl.x - 2, y}, kBlackColor);
+  DrawArrow({tl.x - 2, y}, kBlack);
 }
 
 }  // namespace spare_the_air
