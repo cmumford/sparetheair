@@ -40,8 +40,6 @@ constexpr const Size kEPaperSize = {264, 176};
 
 constexpr const Rectangle kEPaperBounds = {
     Point({0, 0}), Point({kEPaperSize.width - 1, kEPaperSize.height - 1})};
-const Rectangle kTodayBounds = {Point({0, 0}),
-                                Point({kEPaperBounds.right(), 88})};
 constexpr const int kForecastWidth = kEPaperSize.width / 3;
 
 // There are 3 forecast sections so 2 dividers between them.
@@ -50,20 +48,14 @@ constexpr const int kDividers[kNumStatusDays - 1] = {
     kEPaperSize.width * 2 / 3,
 };
 
-const Rectangle kForecastBounds[kNumStatusDays - 1] = {
-    {Point({0 * kForecastWidth, kTodayBounds.bottom()}),
-     Point({kDividers[0] - 1, kEPaperBounds.bottom()})},
-    {Point({kDividers[0], kTodayBounds.bottom()}),
-     Point({kDividers[1] - 1, kEPaperBounds.bottom()})},
-    {Point({kDividers[1], kTodayBounds.bottom()}),
-     Point({kEPaperSize.width - 1, kEPaperBounds.bottom()})},
-};
-
 constexpr const Size kAQIMeterSize = {10, 6 * 10};
 
 constexpr const uint16_t kWhiteColor = EPD_WHITE;
 constexpr const uint16_t kBlackColor = EPD_BLACK;
 constexpr const uint16_t kRedColor = EPD_RED;
+
+constexpr const GFXfont& kNormalFont = windows_command_prompt11pt7b;
+constexpr const GFXfont& kLargeFont = LibreBaskerville_Bold18pt7b;
 
 // Just for debugging.
 constexpr const bool kDrawBorders = false;
@@ -116,11 +108,19 @@ int StringWidth(const GFXfont& font, const String& str) {
   return width;
 }
 
-constexpr const GFXfont& kNormalFont = windows_command_prompt11pt7b;
-constexpr const GFXfont& kLargeFont = LibreBaskerville_Bold18pt7b;
+const Rectangle kTodayBounds = {Point({0, 0}),
+                                Point({kEPaperBounds.right(), 88})};
+const Rectangle kForecastBounds[kNumStatusDays - 1] = {
+    {Point({0 * kForecastWidth, kTodayBounds.bottom()}),
+     Point({kDividers[0] - 1, kEPaperBounds.bottom()})},
+    {Point({kDividers[0], kTodayBounds.bottom()}),
+     Point({kDividers[1] - 1, kEPaperBounds.bottom()})},
+    {Point({kDividers[1], kTodayBounds.bottom()}),
+     Point({kEPaperSize.width - 1, kEPaperBounds.bottom()})},
+};
 
-const int g_normal_font_height = GetCharSize(kNormalFont, 'W').height;
-const int g_large_font_height = GetCharSize(kLargeFont, 'W').height;
+const int kNormalFontHeight = GetCharSize(kNormalFont, 'W').height;
+const int kLargeFontHeight = GetCharSize(kLargeFont, 'W').height;
 
 }  // namespace
 
@@ -175,14 +175,12 @@ void Display::DrawTodayEntry(const Status& status) {
                       kTodayBounds.width(), kTodayBounds.height(), kRedColor);
   }
   const int kMargin = 4;
-  DrawString(status.day_of_week,
-             Point({kMargin, kMargin + g_normal_font_height}), kBlackColor);
-  DrawString(GetMonthDayYear(status.date_full),
-             Point({kMargin, 2 * (kMargin + g_normal_font_height)}),
+  DrawString(status.day_of_week, Point({kMargin, kMargin + kNormalFontHeight}),
              kBlackColor);
+  DrawString(GetMonthDayYear(status.date_full),
+             Point({kMargin, 2 * (kMargin + kNormalFontHeight)}), kBlackColor);
 
-  DrawString(status.alert_status,
-             Point({kMargin + 8, 58 + g_normal_font_height}),
+  DrawString(status.alert_status, Point({kMargin + 8, 58 + kNormalFontHeight}),
              status.AlertInEffect() ? kRedColor : kBlackColor);
 
   DrawAQIMeter({kTodayBounds.right() - 3 * kMargin - kAQIMeterSize.width -
@@ -208,7 +206,7 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
   }
   display_.setFont(&kNormalFont);
   const int kMargin = 4;
-  int string_y = bounds.top() + kMargin + g_normal_font_height;
+  int string_y = bounds.top() + kMargin + kNormalFontHeight;
   DrawString(GetDayOfWeekAbbrev(status.day_of_week),
              Point({bounds.left() + kMargin, string_y}), kBlackColor);
 
@@ -219,7 +217,7 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
 
   int string_x =
       (bounds.left() + bounds.right() - StringWidth(kLargeFont, aqi_str)) / 2;
-  string_y += kMargin + g_large_font_height;
+  string_y += kMargin + kLargeFontHeight;
   DrawString(aqi_str, Point({string_x, string_y}), kBlackColor);
 
   DrawAQIMeter({bounds.right() - kMargin - kAQIMeterSize.width,
