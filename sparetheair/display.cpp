@@ -190,8 +190,10 @@ void Display::DrawTodayEntry(const Status& status) {
 }
 
 void Display::DrawForecastLines() {
+  // Draw the horizontal line above the forecast section.
   display_.drawLine(kTodayBounds.left(), kTodayBounds.bottom(),
                     kTodayBounds.right(), kTodayBounds.bottom(), kBlack);
+  // Draw the vertical lines dividing the forecast days.
   for (int i = 0; i < kNumStatusDays - 1; i++) {
     const Rectangle fr = kForecastBounds[i];
     display_.drawLine(fr.right(), fr.top(), fr.right(), fr.bottom(), kBlack);
@@ -214,8 +216,9 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
                        ? String(status.aqi_val)
                        : Network::AQICategoryAbbrev(status.aqi_category);
 
+  const int text_right = bounds.right() - kAQIMeterSize.width;
   int string_x =
-      (bounds.left() + bounds.right() - StringWidth(kLargeFont, aqi_str)) / 2;
+      (bounds.left() + text_right - StringWidth(kLargeFont, aqi_str)) / 2;
   string_y += kMargin + kLargeFontHeight;
   DrawString(aqi_str, Point({string_x, string_y}), kBlack);
 
