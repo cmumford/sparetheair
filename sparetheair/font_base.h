@@ -1,4 +1,4 @@
-constexpr uint8_t windows_command_prompt11pt7bBitmaps[] PROGMEM = {
+constexpr const uint8_t windows_command_prompt11pt7bBitmaps[] PROGMEM = {
   0x77, 0xFF, 0xFF, 0xFD, 0xCE, 0x00, 0x1C, 0xE0, 0xC7, 0xC7, 0xC7, 0xC7,
   0x44, 0x77, 0x3B, 0x9D, 0xDF, 0xF7, 0x73, 0xB9, 0xDC, 0xEE, 0xFF, 0xBB,
   0x9D, 0xCE, 0xE0, 0x1C, 0x1C, 0x1C, 0x3F, 0xE0, 0xE0, 0x20, 0x3E, 0x03,
@@ -184,7 +184,7 @@ const GFXglyph windows_command_prompt11pt7bGlyphs[] PROGMEM = {
   {  1021,   7,  12,   8,    0,  -11 },   // 0x7D '}'
   {  1032,  10,   4,  12,    0,  -11 } }; // 0x7E '~'
 
-constexpr GFXfont windows_command_prompt11pt7b PROGMEM = {
+constexpr const GFXfont windows_command_prompt11pt7b PROGMEM = {
   (uint8_t  *)windows_command_prompt11pt7bBitmaps,
   (GFXglyph *)windows_command_prompt11pt7bGlyphs,
   0x20, 0x7E, 19 };

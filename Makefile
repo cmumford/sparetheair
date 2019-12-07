@@ -28,8 +28,11 @@ verify:
 sparetheair/font_base.h: Makefile
 	${FONTCONVERT} fonts/windows_command_prompt.ttf 11 > sparetheair/font_base.h
 
+sparetheair/font_medium.h: Makefile
+	${FONTCONVERT} fonts/LibreBaskerville-Bold.ttf 15 > sparetheair/font_medium.h
+
 sparetheair/font_large.h: Makefile
 	${FONTCONVERT} fonts/LibreBaskerville-Bold.ttf 18 > sparetheair/font_large.h
 
 .PHONY: fonts
-fonts: sparetheair/font_base.h sparetheair/font_large.h
+fonts: sparetheair/font_base.h sparetheair/font_medium.h sparetheair/font_large.h
