@@ -1,10 +1,11 @@
 // Copyright 2019 Christopher Mumford
 // This code is licensed under MIT license (see LICENSE for details)
 
+#include "aqi_meter_image.h"
 #include "display.h"
 #include "font_base.h"
-#include "font_medium.h"
 #include "font_large.h"
+#include "font_medium.h"
 #include "logo.h"
 #include "network.h"
 #include "size.h"
@@ -49,11 +50,10 @@ constexpr const int kDividers[kNumStatusDays - 1] = {
     kEPaperSize.width * 2 / 3,
 };
 
-constexpr const Size kAQIMeterSize = {10, 6 * 10};
-
 constexpr const uint16_t kWhite = EPD_WHITE;
 constexpr const uint16_t kBlack = EPD_BLACK;
 constexpr const uint16_t kRed = EPD_RED;
+constexpr const uint16_t kTransparent = 99;
 
 constexpr const GFXfont& kNormalFont = windows_command_prompt11pt7b;
 constexpr const GFXfont& kMediumFont = LibreBaskerville_Bold13pt7b;
@@ -78,11 +78,16 @@ String GetMonthDayYear(const String& full_date) {
 }
 
 uint8_t GetPixelColor(int pixel) {
-  if (pixel == 2)
-    return kBlack;
-  if (pixel == 1)
-    return kRed;
-  return kWhite;
+  switch (pixel) {
+    case 3:
+      return kWhite;
+    case 2:
+      return kBlack;
+    case 1:
+      return kRed;
+    default:
+      return kTransparent;
+  }
 }
 
 int CatToInt(AQICategory cat) {
@@ -153,15 +158,22 @@ void Display::Draw() {
   display_.display();
 }
 
-void Display::DrawLogo() {
-  const int kMargin = 4;
-  const int left = kEPaperSize.width - kLogoSize.width - kMargin;
-  for (int x = 0; x < kLogoSize.width; x++) {
-    for (int y = 0; y < kLogoSize.height; y++) {
-      int pixel = kLogo[y * kLogoSize.width + x];
-      display_.writePixel(left + x, kMargin + y, GetPixelColor(pixel));
+void Display::DrawImage(const Point tl,
+                        const uint8_t* pixels,
+                        const Size& size) {
+  for (int y = 0; y < size.height; y++) {
+    for (int x = 0; x < size.width; x++) {
+      uint8_t color = GetPixelColor(*pixels++);
+      if (color != kTransparent)
+        display_.writePixel(tl.x + x, tl.y + y, color);
     }
   }
+}
+
+void Display::DrawLogo() {
+  const int kMargin = 4;
+  DrawImage(Point({kEPaperSize.width - kLogoSize.width - kMargin, 0}), kLogo,
+            kLogoSize);
 }
 
 void Display::DrawString(const String& str, const Point& pt, uint16_t color) {
@@ -177,6 +189,10 @@ void Display::DrawTodayEntry(const Status& status) {
     display_.drawRect(kTodayBounds.left(), kTodayBounds.top(),
                       kTodayBounds.width(), kTodayBounds.height(), kRed);
   }
+  if (false && status.AlertInEffect()) {
+    display_.fillRect(kTodayBounds.left(), kTodayBounds.top(),
+                      kTodayBounds.width(), kTodayBounds.height(), kRed);
+  }
   const int kMargin = 4;
   DrawString(status.day_of_week, Point({kMargin, kMargin + kNormalFontHeight}),
              kBlack);
@@ -185,7 +201,7 @@ void Display::DrawTodayEntry(const Status& status) {
 
   display_.setFont(&kMediumFont);
   DrawString(status.alert_status, Point({kMargin + 8, 58 + kNormalFontHeight}),
-             status.AlertInEffect() ? kRed : kBlack);
+             kBlack);
 
   DrawAQIMeter({kTodayBounds.right() - 3 * kMargin - kAQIMeterSize.width -
                     kLogoSize.width,
@@ -254,21 +270,16 @@ void Display::DrawArrow(const Point& tip, uint8_t color) {
 }
 
 void Display::DrawAQIMeter(const Point& tl, AQICategory category) {
-  const int kMeterBlockHeight = kAQIMeterSize.width;
-  display_.drawRect(tl.x, tl.y, kAQIMeterSize.width, kAQIMeterSize.height,
-                    kBlack);
-  const int kNumCategories = 6;
-  int y = tl.y + kMeterBlockHeight;
-  for (int i = 0; i < kNumCategories - 1; i++, y += kMeterBlockHeight)
-    display_.drawLine(tl.x, y, tl.x + kAQIMeterSize.width - 1, y, kBlack);
+  DrawImage(tl, kAQIMeterImage, kAQIMeterSize);
 
   if (category == AQICategory::None)
     return;
 
   // Now draw the little arrow.
+  const int kMeterBlockHeight = kAQIMeterSize.width;
   int int_val = CatToInt(category);
-  y = tl.y + kAQIMeterSize.height - int_val * kMeterBlockHeight -
-      kMeterBlockHeight / 2;
+  int y = tl.y + kAQIMeterSize.height - int_val * kMeterBlockHeight -
+          kMeterBlockHeight / 2;
   DrawArrow({tl.x - 2, y}, kBlack);
 }
 

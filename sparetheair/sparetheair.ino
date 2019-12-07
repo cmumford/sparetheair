@@ -20,7 +20,7 @@ const char k_today_no_alert_response[] =
     "<item>\n"
     "<title>Spare the Air Status for Saturday, November 23, 2019</title>\n"
     "<date>Saturday, November 23, 2019</date>\n"
-    "<description>No Alert</description></item></channel>\n"
+    "<description>Alert In Effect</description></item></channel>\n"
     "</rss>";
 
 const char k_forecast_response[] =

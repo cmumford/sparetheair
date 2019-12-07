@@ -11,6 +11,7 @@ namespace spare_the_air {
 
 struct Point;
 struct Rectangle;
+struct Size;
 
 class Display {
  public:
@@ -21,6 +22,7 @@ class Display {
 
  private:
   void DrawString(const String& str, const Point& pt, uint16_t color);
+  void DrawImage(const Point tl, const uint8_t* pixels, const Size& size);
   void DrawLogo();
   void DrawTodayEntry(const Status& status);
   void DrawForecastLines();
