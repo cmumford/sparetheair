@@ -215,20 +215,19 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
   }
   display_.setFont(&kNormalFont);
   const int kMargin = 4;
+  int string_y = bounds.top() + kMargin + g_normal_font_height;
   DrawString(GetDayOfWeekAbbrev(status.day_of_week),
-             Point({bounds.left() + kMargin,
-                    bounds.top() + kMargin + g_normal_font_height}),
-             kBlackColor);
+             Point({bounds.left() + kMargin, string_y}), kBlackColor);
 
   display_.setFont(&kLargeFont);
   String aqi_str = status.aqi_val != -1
                        ? String(status.aqi_val)
                        : Network::AQICategoryAbbrev(status.aqi_category);
 
-  DrawString(aqi_str, Point({bounds.left() + kMargin,
-                             bounds.top() + kMargin + g_normal_font_height +
-                                 kMargin + g_large_font_height}),
-             kBlackColor);
+  int string_x =
+      (bounds.left() + bounds.right() - StringWidth(kLargeFont, aqi_str)) / 2;
+  string_y += kMargin + g_large_font_height;
+  DrawString(aqi_str, Point({string_x, string_y}), kBlackColor);
 
   DrawAQIMeter({bounds.right() - kMargin - kAQIMeterSize.width,
                 bounds.bottom() - kMargin - kAQIMeterSize.height},
