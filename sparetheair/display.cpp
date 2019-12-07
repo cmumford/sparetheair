@@ -106,13 +106,6 @@ Size GetCharSize(const GFXfont& font, char ch) {
   return Size({glyph->width, glyph->height});
 }
 
-Point GetCharOffset(const GFXfont& font, char ch) {
-  const GFXglyph* glyph = GetGlyph(font, ch);
-  if (!glyph)
-    return Point();
-  return Point({glyph->xOffset, glyph->yOffset});
-}
-
 int StringWidth(const GFXfont& font, const String& str) {
   int width = 0;
   for (int i = 0; i < str.length(); i++) {
