@@ -3,5 +3,5 @@
 rm -rf build
 mkdir build
 cd build
-cmake ..
+cmake -Wno-dev ..
 make --jobs=4

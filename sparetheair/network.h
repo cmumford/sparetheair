@@ -4,6 +4,8 @@
 #ifndef SPARETHEAIR_NETWORK_H_
 #define SPARETHEAIR_NETWORK_H_
 
+#include <Arduino.h>
+
 namespace spare_the_air {
 
 // Keep these in order from best to worst.
