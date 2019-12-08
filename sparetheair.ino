@@ -14,8 +14,8 @@ using spare_the_air::Network;
 
 namespace {
 
-char kWiFiSSID[] = SECRET_SSID;
-char kWiFiPassword[] = SECRET_WIFI_PASSWORD;
+constexpr const char kWiFiSSID[] = SECRET_SSID;
+constexpr const char kWiFiPassword[] = SECRET_WIFI_PASSWORD;
 
 // The blue LED pin.
 const int kLEDPin = 2;
@@ -53,7 +53,7 @@ int DisconnectWiFi() {
 
 void DrawStatus(int error) {
   Display display;
-  if (error) {
+  if (error != HTTP_CODE_OK) {
     display.DrawError(error);
     return;
   }
@@ -66,7 +66,8 @@ int FetchStatus() {
   int err = ConnectWiFi();
   if (err != WL_CONNECTED) {
     digitalWrite(kLEDPin, LOW);
-    Serial.printf("Error %d connecting to WiFi\n", err);
+    Serial.printf("Error %d connecting to %s\n", err, kWiFiSSID);
+    DrawStatus(err);
     return err;
   }
   digitalWrite(kLEDPin, HIGH);
