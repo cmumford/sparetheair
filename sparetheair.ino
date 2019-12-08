@@ -20,12 +20,9 @@ char kWiFiPassword[] = SECRET_WIFI_PASSWORD;
 // The blue LED pin.
 const int kLEDPin = 2;
 
-}  // namespace
+RTC_DATA_ATTR int g_boot_count = 0;
 
-void setup() {
-  Serial.begin(115200);
-  pinMode(kLEDPin, OUTPUT);
-}
+}  // namespace
 
 // Connect to WiFi. Will flash the LED while waiting to connect.
 // Return a WiFi.status() value where WL_CONNECTED indicates
@@ -81,10 +78,26 @@ int FetchStatus() {
   return 0;
 }
 
+void setup() {
+  Serial.begin(115200);
+
+  ++g_boot_count;
+  Serial.println("Boot number: " + String(g_boot_count));
+
+  FetchStatus();
+
+  // Sleep for four hours.
+  const uint64_t kSleepTimeUsec = 4 * 3600 * 1000 * 1000;
+  esp_sleep_enable_timer_wakeup(kSleepTimeUsec);
+
+  Serial.println("Going to sleep now");
+  delay(1000);
+  Serial.flush();
+  esp_deep_sleep_start();
+
+  pinMode(kLEDPin, OUTPUT);
+}
+
 void loop() {
-  while (true) {
-    FetchStatus();
-    // Sleep one hour.
-    delay(3600 * 1000);
-  }
+  // This will never be called.
 }

@@ -149,7 +149,7 @@ void Display::DrawError(int error) {
     display_begun_ = true;
   }
   display_.clearBuffer();
-  const String msg = String("Error retrieving status: ") + error;
+  const String msg = String("Error retrieving status: ") + String(error);
 
   display_.setFont(&kLargeFont);
   DrawString(msg, Point({4, 50}), kBlack);
