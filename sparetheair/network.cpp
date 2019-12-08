@@ -238,6 +238,7 @@ const Status& Network::AlertStatus() {
 void Network::Reset() {
   g_parse_channel_item_idx = 0;
   g_today_idx = -1;
+  g_today.Reset();
   for (int i = 0; i < kMaxNumEntries; i++)
     g_forecasts[i].Reset();
 }
