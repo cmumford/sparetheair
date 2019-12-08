@@ -104,7 +104,12 @@ void XML_ForecastCallback(uint8_t status_flags,
 
 // static
 void Status::Reset() {
-  *this = Status();
+  alert_status = "";
+  date_full = "";
+  day_of_week = "";
+  aqi_val = -1;
+  aqi_category = AQICategory::None;
+  pollutant = "";
 }
 
 // static
