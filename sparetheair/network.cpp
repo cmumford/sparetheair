@@ -111,10 +111,9 @@ void Status::Reset() {
 int Network::Fetch() {
   Reset();
   int err = FetchAlert();
-  if (!err) {
+  if (err == HTTP_CODE_OK) {
     err = FetchForecast();
-    if (!err)
-      MergeAlert();
+    MergeAlert();
   } else {
     FetchForecast();
   }
