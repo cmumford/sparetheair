@@ -175,7 +175,7 @@ String Network::ExtractDayOfWeek(const String& str) {
   int idx = str.indexOf("BAAQMD Air Quality Forecast for ");
   if (idx == 0)
     return str.substring(kPrefixLen);
-  idx = str.indexOf(',');
+  idx = str.indexOf(",");
   if (idx <= 0)
     return String();
   return str.substring(0, idx);

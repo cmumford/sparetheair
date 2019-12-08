@@ -46,8 +46,7 @@ constexpr const int kForecastWidth = kEPaperSize.width / 3;
 
 // There are 3 forecast sections so 2 dividers between them.
 constexpr const int kDividers[kNumStatusDays - 1] = {
-    kEPaperSize.width * 1 / 3,
-    kEPaperSize.width * 2 / 3,
+    kEPaperSize.width * 1 / 3, kEPaperSize.width * 2 / 3,
 };
 
 constexpr const uint16_t kWhite = EPD_WHITE;

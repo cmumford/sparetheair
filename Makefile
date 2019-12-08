@@ -18,7 +18,15 @@ format:
 		sparetheair/network.cpp \
 		sparetheair/network.h \
 		sparetheair/size.h \
-		sparetheair.ino
+		sparetheair.ino \
+		sparetheair/unit_tests/main.cc \
+		sparetheair/unit_tests/mock_arduino/Arduino.h \
+		sparetheair/unit_tests/mock_arduino/HTTPClient.cpp \
+		sparetheair/unit_tests/mock_arduino/HTTPClient.h \
+		sparetheair/unit_tests/mock_arduino/Print.h \
+		sparetheair/unit_tests/mock_arduino/SPI.h \
+		sparetheair/unit_tests/mock_arduino/String.cpp \
+		sparetheair/unit_tests/mock_arduino/String.h
 
 .PHONY: verify
 verify:

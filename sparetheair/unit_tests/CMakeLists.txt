@@ -46,11 +46,23 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 endif()
 
 include_directories(
-  "${MOCK_ARDUINO_DIR}"
-  "${TINYXML_DIR}"
   "${ADAFRUIT_EPD_DIR}"
   "${ADAFRUIT_GFX_DIR}"
+  "${MOCK_ARDUINO_DIR}"
+  "${SPARETHEAIR_DIR}"
+  "${TINYXML_DIR}"
   "."
+)
+
+add_library(Arduino "")
+  target_sources(Arduino
+  PRIVATE
+    "${MOCK_ARDUINO_DIR}/String.cpp"
+    "${MOCK_ARDUINO_DIR}/String.h"
+    "${MOCK_ARDUINO_DIR}/Arduino.h"
+    "${MOCK_ARDUINO_DIR}/Print.h"
+    "${MOCK_ARDUINO_DIR}/SPI.h"
+    "${MOCK_ARDUINO_DIR}/WProgram.h"
 )
 
 add_library(TinyXML "")
@@ -73,8 +85,8 @@ add_library(Adafruit_EPD "")
     "${MOCK_ARDUINO_DIR}/Adafruit_EPD.cpp"
 )
 
-add_library(sta "")
-  target_sources(sta
+add_library(sparetheair "")
+  target_sources(sparetheair
   PRIVATE
     "${SPARETHEAIR_DIR}/aqi_meter_image.h"
     "${SPARETHEAIR_DIR}/display.cpp"
@@ -90,10 +102,11 @@ add_library(sta "")
 
 add_executable(unit_tests main.cc)
 target_link_libraries(unit_tests
+  sparetheair
   Adafruit_EPD
   HTTPClient
   TinyXML
   gtest_main
-  sta
+  Arduino
 )
 add_test(NAME unit_tests COMMAND unit_tests)

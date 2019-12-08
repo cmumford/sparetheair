@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Bay Area Air Quality Management District Air Quality Forecast</title>
+    <link>http://www.baaqmd.gov/</link>
+    <description>Current air quality forecasts and alerts for the San Francisco Bay Area delivered using RSS. The information for this RSS feed is provided by the Bay Area Air Quality Management District and is updated at least once per weekday. Revisions to the forecast may be made at the discretion of BAAQMD. The Air Quality Forecast is comprised of an Air Quality Index and Pollutant Type forecast for each section of the District - North Counties, Coast and Central Bay, Eastern District, South and Central Bay, and Santa Clara Valley. Further explanation of the forecast can be found at www.baaqmd.gov. If you are using the feed on your web site, we request you maintain a link to www.baaqmd.gov.</description>
+    <language>en</language>
+    <lastBuildDate>Friday, November 22 at 9:50 AM</lastBuildDate>
+    <image>
+      <title>BAAQMD - Air Quality Forecast</title>
+      <url>http://www.baaqmd.gov/images/logo-baaqmd-rss.gif</url>
+      <link>http://www.baaqmd.gov</link>
+      <width>144</width>
+      <height>68</height>
+    </image>
+    <item>
+      <title>BAAQMD Air Quality Forecast for Friday</title>
+      <link>http://www.baaqmd.gov</link>
+      <description>AQI and Pollutant Forecast for Friday by district.
+North Counties - AQI: 55, Pollutant: PM2.5.
+Coast and Central Bay - AQI: 57, Pollutant: PM2.5.
+Eastern District - AQI: 53, Pollutant: PM2.5
+South and Central Bay - AQI: 50, Pollutant: PM2.5
+Santa Clara Valley - AQI: 55, Pollutant: PM2.5</description>
+    </item>
+    <item>
+      <title>BAAQMD Air Quality Forecast for Saturday</title>
+      <link>http://www.baaqmd.gov</link>
+      <description>AQI and Pollutant Forecast for Saturday by district.
+North Counties - AQI: 61, Pollutant: PM2.5.
+Coast and Central Bay - AQI: 59, Pollutant: PM2.5.
+Eastern District - AQI: 61, Pollutant: PM2.5
+South and Central Bay - AQI: 50, Pollutant: PM2.5
+Santa Clara Valley - AQI: 63, Pollutant: PM2.5</description>
+    </item>
+    <item>
+      <title>BAAQMD Air Quality Forecast for Sunday</title>
+      <link>http://www.baaqmd.gov</link>
+      <description>AQI and Pollutant Forecast for Sunday by district.
+North Counties - AQI: 68, Pollutant: PM2.5.
+Coast and Central Bay - AQI: 63, Pollutant: PM2.5.
+Eastern District - AQI: 66, Pollutant: PM2.5
+South and Central Bay - AQI: 53, Pollutant: PM2.5
+Santa Clara Valley - AQI: 72, Pollutant: PM2.5</description>
+    </item>
+    <item>
+      <title>BAAQMD Air Quality Forecast for Monday</title>
+      <link>http://www.baaqmd.gov</link>
+      <description>AQI and Pollutant Forecast for Monday by district.
+North Counties - AQI: Moderate, Pollutant: PM2.5.
+Coast and Central Bay - AQI: Moderate, Pollutant: PM2.5.
+Eastern District - AQI: Good, Pollutant: PM2.5
+South and Central Bay - AQI: Good, Pollutant: OZONE
+Santa Clara Valley - AQI: Moderate, Pollutant: PM2.5</description>
+    </item>
+    <item>
+      <title>BAAQMD Air Quality Forecast for Tuesday</title>
+      <link>http://www.baaqmd.gov</link>
+      <description>AQI and Pollutant Forecast for Tuesday by district.
+North Counties - AQI: Good, Pollutant: PM2.5.
+Coast and Central Bay - AQI: Moderate, Pollutant: PM2.5.
+Eastern District - AQI: Good, Pollutant: PM2.5
+South and Central Bay - AQI: Good, Pollutant: PM2.5
+Santa Clara Valley - AQI: Unhealthy for Sensitive Groups, Pollutant: PM2.5</description>
+    </item>
+  </channel>
+</rss>

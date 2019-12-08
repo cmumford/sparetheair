@@ -6,16 +6,12 @@
 #define HTTP_CODE_OK 200
 
 class HTTPClient {
-  public:
-    HTTPClient();
+ public:
+  HTTPClient();
 
-    void begin(String url) {}
-    int GET() {
-      return HTTP_CODE_OK;
-    }
-    String getString() {
-      return String();
-    }
+  void begin(String url);
+  int GET();
+  String getString();
 };
 
 #endif  // MOCK_ARDUINO_HTTPCLIENT_H
