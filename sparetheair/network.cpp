@@ -56,9 +56,9 @@ HttpFetchResult DoHTTPGet(const char* url) {
 
 void XML_Alertcallback(uint8_t status_flags,
                        char* tag_name,
-                       uint16_t tag_name_len,
+                       uint16_t /*tag_name_len*/,
                        char* data,
-                       uint16_t data_len) {
+                       uint16_t /*data_len*/) {
   if (!(status_flags & STATUS_TAG_TEXT))
     return;
   if (!strcasecmp(tag_name, "/rss/channel/item/date")) {
@@ -70,9 +70,9 @@ void XML_Alertcallback(uint8_t status_flags,
 
 void XML_ForecastCallback(uint8_t status_flags,
                           char* tag_name,
-                          uint16_t tag_name_len,
+                          uint16_t /*tag_name_len*/,
                           char* data,
-                          uint16_t data_len) {
+                          uint16_t /*data_len*/) {
   if ((status_flags & STATUS_END_TAG) &&
       !strcasecmp(tag_name, "/rss/channel/item")) {
     g_parse_channel_item_idx++;

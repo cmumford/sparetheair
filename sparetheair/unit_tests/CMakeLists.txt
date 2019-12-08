@@ -99,6 +99,8 @@ add_library(sparetheair "")
     "${SPARETHEAIR_DIR}/network.h"
     "${SPARETHEAIR_DIR}/size.h"
 )
+target_compile_options(sparetheair
+  PRIVATE -Wall -Wextra -pedantic -Werror)
 
 add_executable(unit_tests main.cc)
 target_link_libraries(unit_tests

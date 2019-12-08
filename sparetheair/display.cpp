@@ -108,7 +108,7 @@ Size GetCharSize(const GFXfont& font, char ch) {
 
 int StringWidth(const GFXfont& font, const String& str) {
   int width = 0;
-  for (int i = 0; i < str.length(); i++) {
+  for (size_t i = 0; i < str.length(); i++) {
     const GFXglyph* glyph = GetGlyph(font, str[i]);
     if (glyph)
       width += glyph->xAdvance;
