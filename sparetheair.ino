@@ -4,9 +4,12 @@
 #include <WiFi.h>
 
 #include "arduino_secrets.h"
+#include "sparetheair/display.cpp"
+#include "sparetheair/display.h"
 #include "sparetheair/network.cpp"
 #include "sparetheair/network.h"
 
+using spare_the_air::Display;
 using spare_the_air::Network;
 
 namespace {
@@ -51,7 +54,14 @@ int DisconnectWiFi() {
   return 0;
 }
 
-void DrawStatus() {}
+void DrawStatus(int error) {
+  Display display;
+  if (error) {
+    display.DrawError(error);
+    return;
+  }
+  display.Draw();
+}
 
 int FetchStatus() {
   Serial.println("Fetching Status");
@@ -65,7 +75,7 @@ int FetchStatus() {
   digitalWrite(kLEDPin, HIGH);
   err = Network::Fetch();
   DisconnectWiFi();
-  DrawStatus();
+  DrawStatus(err);
   Serial.println("Successfully refreshed status");
   digitalWrite(kLEDPin, LOW);
   return 0;

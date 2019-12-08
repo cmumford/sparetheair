@@ -143,6 +143,20 @@ Display::Display()
 
 Display::~Display() = default;
 
+void Display::DrawError(int error) {
+  if (!display_begun_) {
+    display_.begin();
+    display_begun_ = true;
+  }
+  display_.clearBuffer();
+  const String msg = String("Error retrieving status: ") + error;
+
+  display_.setFont(&kLargeFont);
+  DrawString(msg, Point({4, 50}), kBlack);
+
+  display_.display();
+}
+
 void Display::Draw() {
   if (!display_begun_) {
     display_.begin();
@@ -235,7 +249,6 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
                              ? String(status.aqi_val)
                              : Network::AQICategoryAbbrev(status.aqi_category);
   const GFXfont& kAQIFont = aqi_str.length() > 2 ? kMediumFont : kLargeFont;
-  const int kAQIFontHeight = GetCharSize(kAQIFont, 'W').height;
 
   const Rectangle aqi_bounds(
       {bounds.left(), string_y,

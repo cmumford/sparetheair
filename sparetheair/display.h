@@ -19,6 +19,7 @@ class Display {
   ~Display();
 
   void Draw();
+  void DrawError(int error);
 
  private:
   void DrawString(const String& str, const Point& pt, uint16_t color);
