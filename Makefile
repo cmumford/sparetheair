@@ -17,7 +17,11 @@ format:
 		sparetheair/display.h \
 		sparetheair/network.cpp \
 		sparetheair/network.h \
+		sparetheair/parser.cpp \
+		sparetheair/parser.h \
 		sparetheair/size.h \
+		sparetheair/status.cpp \
+		sparetheair/status.h \
 		sparetheair.ino \
 		sparetheair/unit_tests/main.cc \
 		sparetheair/unit_tests/mock_arduino/Arduino.h \

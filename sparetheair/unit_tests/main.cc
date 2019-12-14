@@ -1,16 +1,14 @@
 #include <fstream>
 #include <streambuf>
 
-#include "display.h"
 #include "gtest/gtest.h"
-#include "network.h"
+#include "parser.h"
 
 namespace {
 
 using spare_the_air::AQICategory;
-using spare_the_air::Display;
-using spare_the_air::Network;
 using spare_the_air::RegionValues;
+using spare_the_air::Parser;
 using spare_the_air::Status;
 
 String ReadFile(const std::string& fname) {
@@ -25,106 +23,102 @@ int CatToInt(AQICategory cat) {
   return static_cast<int>(cat);
 }
 
-TEST(Network, dayOfWeek) {
-  Network::Reset();
-  EXPECT_EQ(Network::ExtractDayOfWeek("BAAQMD Air Quality Forecast for Friday"),
+TEST(Parser, dayOfWeek) {
+  EXPECT_EQ(Parser::ExtractDayOfWeek("BAAQMD Air Quality Forecast for Friday"),
             String("Friday"));
-  EXPECT_EQ(Network::ExtractDayOfWeek("Saturday, November 23, 2019"),
+  EXPECT_EQ(Parser::ExtractDayOfWeek("Saturday, November 23, 2019"),
             String("Saturday"));
-  EXPECT_EQ(Network::ExtractDayOfWeek("Invalid date."), String());
-  EXPECT_EQ(Network::ExtractDayOfWeek(""), String());
-  EXPECT_EQ(Network::ExtractDayOfWeek("BAAQMD Air Quality Forecast for "),
+  EXPECT_EQ(Parser::ExtractDayOfWeek("Invalid date."), String());
+  EXPECT_EQ(Parser::ExtractDayOfWeek(""), String());
+  EXPECT_EQ(Parser::ExtractDayOfWeek("BAAQMD Air Quality Forecast for "),
             String());
 }
 
-TEST(Network, parseAQIName) {
-  EXPECT_EQ(CatToInt(Network::ParseAQIName("Good")),
+TEST(Parser, parseAQIName) {
+  EXPECT_EQ(CatToInt(Parser::ParseAQIName("Good")),
             CatToInt(AQICategory::Good));
-  EXPECT_EQ(CatToInt(Network::ParseAQIName("Moderate")),
+  EXPECT_EQ(CatToInt(Parser::ParseAQIName("Moderate")),
             CatToInt(AQICategory::Moderate));
-  EXPECT_EQ(CatToInt(Network::ParseAQIName("Unhealthy for Sensitive Groups")),
+  EXPECT_EQ(CatToInt(Parser::ParseAQIName("Unhealthy for Sensitive Groups")),
             CatToInt(AQICategory::UnhealthyForSensitiveGroups));
-  EXPECT_EQ(CatToInt(Network::ParseAQIName("Unhealthy")),
+  EXPECT_EQ(CatToInt(Parser::ParseAQIName("Unhealthy")),
             CatToInt(AQICategory::Unhealthy));
-  EXPECT_EQ(CatToInt(Network::ParseAQIName("Very Unhealthy")),
+  EXPECT_EQ(CatToInt(Parser::ParseAQIName("Very Unhealthy")),
             CatToInt(AQICategory::VeryUnhealthy));
-  EXPECT_EQ(CatToInt(Network::ParseAQIName("Hazardous")),
+  EXPECT_EQ(CatToInt(Parser::ParseAQIName("Hazardous")),
             CatToInt(AQICategory::Hazardous));
 
-  EXPECT_EQ(CatToInt(Network::ParseAQIName("InvalidText")),
+  EXPECT_EQ(CatToInt(Parser::ParseAQIName("InvalidText")),
             CatToInt(AQICategory::None));
-  EXPECT_EQ(CatToInt(Network::ParseAQIName("")), CatToInt(AQICategory::None));
+  EXPECT_EQ(CatToInt(Parser::ParseAQIName("")), CatToInt(AQICategory::None));
 }
 
-TEST(Network, parseAQICategoryValue) {
-  EXPECT_EQ(CatToInt(Network::AQIValueToCategory(0)),
+TEST(Parser, parseAQICategoryValue) {
+  EXPECT_EQ(CatToInt(Parser::AQIValueToCategory(0)),
             CatToInt(AQICategory::Good));
-  EXPECT_EQ(CatToInt(Network::AQIValueToCategory(10)),
+  EXPECT_EQ(CatToInt(Parser::AQIValueToCategory(10)),
             CatToInt(AQICategory::Good));
-  EXPECT_EQ(CatToInt(Network::AQIValueToCategory(51)),
+  EXPECT_EQ(CatToInt(Parser::AQIValueToCategory(51)),
             CatToInt(AQICategory::Moderate));
-  EXPECT_EQ(CatToInt(Network::AQIValueToCategory(100)),
+  EXPECT_EQ(CatToInt(Parser::AQIValueToCategory(100)),
             CatToInt(AQICategory::Moderate));
-  EXPECT_EQ(CatToInt(Network::AQIValueToCategory(101)),
+  EXPECT_EQ(CatToInt(Parser::AQIValueToCategory(101)),
             CatToInt(AQICategory::UnhealthyForSensitiveGroups));
-  EXPECT_EQ(CatToInt(Network::AQIValueToCategory(150)),
+  EXPECT_EQ(CatToInt(Parser::AQIValueToCategory(150)),
             CatToInt(AQICategory::UnhealthyForSensitiveGroups));
-  EXPECT_EQ(CatToInt(Network::AQIValueToCategory(151)),
+  EXPECT_EQ(CatToInt(Parser::AQIValueToCategory(151)),
             CatToInt(AQICategory::Unhealthy));
-  EXPECT_EQ(CatToInt(Network::AQIValueToCategory(200)),
+  EXPECT_EQ(CatToInt(Parser::AQIValueToCategory(200)),
             CatToInt(AQICategory::Unhealthy));
-  EXPECT_EQ(CatToInt(Network::AQIValueToCategory(201)),
+  EXPECT_EQ(CatToInt(Parser::AQIValueToCategory(201)),
             CatToInt(AQICategory::VeryUnhealthy));
-  EXPECT_EQ(CatToInt(Network::AQIValueToCategory(300)),
+  EXPECT_EQ(CatToInt(Parser::AQIValueToCategory(300)),
             CatToInt(AQICategory::VeryUnhealthy));
-  EXPECT_EQ(CatToInt(Network::AQIValueToCategory(301)),
+  EXPECT_EQ(CatToInt(Parser::AQIValueToCategory(301)),
             CatToInt(AQICategory::Hazardous));
-  EXPECT_EQ(CatToInt(Network::AQIValueToCategory(600)),
+  EXPECT_EQ(CatToInt(Parser::AQIValueToCategory(600)),
             CatToInt(AQICategory::Hazardous));
 
-  EXPECT_EQ(CatToInt(Network::AQIValueToCategory(-1)),
+  EXPECT_EQ(CatToInt(Parser::AQIValueToCategory(-1)),
             CatToInt(AQICategory::None));
 }
 
-TEST(Network, aqiCategoryAbbrev) {
-  EXPECT_EQ(Network::AQICategoryAbbrev(AQICategory::Good), String("G"));
-  EXPECT_EQ(Network::AQICategoryAbbrev(AQICategory::Moderate), String("M"));
+TEST(Parser, aqiCategoryAbbrev) {
+  EXPECT_EQ(Parser::AQICategoryAbbrev(AQICategory::Good), String("G"));
+  EXPECT_EQ(Parser::AQICategoryAbbrev(AQICategory::Moderate), String("M"));
   EXPECT_EQ(
-      Network::AQICategoryAbbrev(AQICategory::UnhealthyForSensitiveGroups),
+      Parser::AQICategoryAbbrev(AQICategory::UnhealthyForSensitiveGroups),
       String("USG"));
-  EXPECT_EQ(Network::AQICategoryAbbrev(AQICategory::Unhealthy), String("U"));
-  EXPECT_EQ(Network::AQICategoryAbbrev(AQICategory::VeryUnhealthy),
+  EXPECT_EQ(Parser::AQICategoryAbbrev(AQICategory::Unhealthy), String("U"));
+  EXPECT_EQ(Parser::AQICategoryAbbrev(AQICategory::VeryUnhealthy),
             String("VU"));
-  EXPECT_EQ(Network::AQICategoryAbbrev(AQICategory::Hazardous), String("H"));
-  EXPECT_EQ(Network::AQICategoryAbbrev(AQICategory::None), String("?"));
+  EXPECT_EQ(Parser::AQICategoryAbbrev(AQICategory::Hazardous), String("H"));
+  EXPECT_EQ(Parser::AQICategoryAbbrev(AQICategory::None), String("?"));
 }
 
-TEST(Network, regionValues) {
-  Network::Reset();
-
+TEST(Parser, regionValues) {
   const String region_data = ReadFile("../test_data/region_data.txt");
   RegionValues values =
-      Network::ExtractRegionValues(region_data, "Eastern District");
+      Parser::ExtractRegionValues(region_data, "Eastern District");
   EXPECT_EQ(values.name, String("Eastern District"));
   EXPECT_EQ(values.aqi, String("53"));
   EXPECT_EQ(values.pollutant, String("PM2.5"));
 
-  values = Network::ExtractRegionValues(region_data, "Santa Clara Valley");
+  values = Parser::ExtractRegionValues(region_data, "Santa Clara Valley");
   EXPECT_EQ(values.name, String("Santa Clara Valley"));
   EXPECT_EQ(values.aqi, String("55"));
   EXPECT_EQ(values.pollutant, String("PM2.6"));
 
-  values = Network::ExtractRegionValues(region_data, "InvalidName");
+  values = Parser::ExtractRegionValues(region_data, "InvalidName");
   EXPECT_EQ(values.name, String());
   EXPECT_EQ(values.aqi, String());
   EXPECT_EQ(values.pollutant, String());
 }
 
-TEST(Network, parseAlert) {
-  Network::Reset();
-  Network::ParseAlert(ReadFile("../test_data/today.xml"));
+TEST(Parser, parseAlert) {
+  Parser::ParseAlert(ReadFile("../test_data/today.xml"));
 
-  const Status& today = Network::AlertStatus();
+  const Status& today = Parser::AlertStatus();
   EXPECT_EQ(today.alert_status, String("Alert In Effect"));
   EXPECT_EQ(today.date_full, String("Saturday, November 23, 2019"));
   EXPECT_EQ(today.day_of_week, String("Saturday"));
@@ -134,11 +128,11 @@ TEST(Network, parseAlert) {
   EXPECT_EQ(today.pollutant, String());
 }
 
-TEST(Network, parseForecast) {
-  Network::Reset();
-  Network::ParseForecast(ReadFile("../test_data/forecast.xml"));
+TEST(Parser, parseForecast) {
+  Parser::Reset();
+  Parser::ParseForecast(ReadFile("../test_data/forecast.xml"));
 
-  const Status& first = Network::forecast(0);
+  const Status& first = Parser::forecast(0);
   // First two only come from the alert.
   EXPECT_EQ(first.alert_status, String());
   EXPECT_EQ(first.date_full, String("BAAQMD Air Quality Forecast for Friday"));
@@ -147,7 +141,7 @@ TEST(Network, parseForecast) {
   EXPECT_EQ(CatToInt(first.aqi_category), CatToInt(AQICategory::Moderate));
   EXPECT_EQ(first.pollutant, String("PM2.5"));
 
-  const Status& second = Network::forecast(1);
+  const Status& second = Parser::forecast(1);
   EXPECT_EQ(second.alert_status, String());
   EXPECT_EQ(second.date_full,
             String("BAAQMD Air Quality Forecast for Saturday"));
@@ -157,15 +151,15 @@ TEST(Network, parseForecast) {
   EXPECT_EQ(second.pollutant, String("PM2.5"));
 }
 
-TEST(Network, fullFetch) {
-  Network::Reset();
+TEST(Parser, fullFetch) {
+  Parser::Reset();
 
   // Simulate doing a full forecast/alert fetch.
-  Network::ParseAlert(ReadFile("../test_data/today.xml"));
-  Network::ParseForecast(ReadFile("../test_data/forecast.xml"));
-  Network::MergeAlert();
+  Parser::ParseAlert(ReadFile("../test_data/today.xml"));
+  Parser::ParseForecast(ReadFile("../test_data/forecast.xml"));
+  Parser::MergeAlert();
 
-  const Status& today = Network::status(0);
+  const Status& today = Parser::status(0);
   EXPECT_EQ(today.alert_status, String("Alert In Effect"));
   EXPECT_EQ(today.date_full, String("Saturday, November 23, 2019"));
   EXPECT_EQ(today.day_of_week, String("Saturday"));
@@ -175,9 +169,9 @@ TEST(Network, fullFetch) {
   EXPECT_EQ(today.pollutant, String("PM2.5"));
 }
 
-TEST(Network, failedFetch) {
-  Network::Reset();
-  const Status& today = Network::status(0);
+TEST(Parser, failedFetch) {
+  Parser::Reset();
+  const Status& today = Parser::status(0);
   EXPECT_EQ(today.alert_status, String());
   EXPECT_EQ(today.date_full, String());
   EXPECT_EQ(today.day_of_week, String());

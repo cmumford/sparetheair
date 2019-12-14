@@ -164,7 +164,7 @@ void Display::Draw() {
   display_.clearBuffer();
 
   DrawLogo();
-  DrawTodayEntry(Network::status(0));
+  DrawTodayEntry(network_.status(0));
   DrawForecastLines();
   DrawForecasts();
 
@@ -246,7 +246,7 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
 
   const String aqi_str = status.aqi_val != -1
                              ? String(status.aqi_val)
-                             : Network::AQICategoryAbbrev(status.aqi_category);
+                             : Parser::AQICategoryAbbrev(status.aqi_category);
   const GFXfont& kAQIFont = aqi_str.length() > 2 ? kMediumFont : kLargeFont;
 
   const Rectangle aqi_bounds(
@@ -270,7 +270,7 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
 void Display::DrawForecasts() {
   // Start at idx=1 because 0 is "today".
   for (int i = 1; i < kNumStatusDays; i++)
-    DrawForecast(Network::status(i), kForecastBounds[i - 1]);
+    DrawForecast(network_.status(i), kForecastBounds[i - 1]);
 }
 
 void Display::DrawArrow(const Point& tip, uint8_t color) {

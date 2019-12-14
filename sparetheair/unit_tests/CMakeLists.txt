@@ -1,13 +1,12 @@
-cmake_minimum_required(VERSION 2.8.9)
+cmake_minimum_required(VERSION 3.11)
 project (unit_tests LANGUAGES CXX)
+
+include(FetchContent)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(TINYXML_DIR "../../../TinyXML")
-set(ADAFRUIT_EPD_DIR "../../../Adafruit_EPD")
-set(ADAFRUIT_GFX_DIR "../../../Adafruit-GFX-Library")
 set(MOCK_ARDUINO_DIR "mock_arduino")
 set(MYPROJECT_DIR ".")
 set(SPARETHEAIR_DIR "..")
@@ -28,6 +27,21 @@ if(result)
   message(FATAL_ERROR "Build step for googletest failed: ${result}")
 endif()
 
+FetchContent_Declare(
+  tinyxml
+  GIT_REPOSITORY    https://github.com/adafruit/TinyXML.git
+  GIT_TAG           master
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND     ""
+  INSTALL_COMMAND   ""
+  TEST_COMMAND      ""
+)
+
+FetchContent_GetProperties(tinyxml)
+if(NOT tinyxml_POPULATED)
+  FetchContent_Populate(tinyxml)
+endif()
+
 # Prevent overriding the parent project's compiler/linker
 # settings on Windows
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -46,11 +60,9 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 endif()
 
 include_directories(
-  "${ADAFRUIT_EPD_DIR}"
-  "${ADAFRUIT_GFX_DIR}"
   "${MOCK_ARDUINO_DIR}"
   "${SPARETHEAIR_DIR}"
-  "${TINYXML_DIR}"
+  "${tinyxml_SOURCE_DIR}"
   "."
 )
 
@@ -68,36 +80,18 @@ add_library(Arduino "")
 add_library(TinyXML "")
   target_sources(TinyXML
   PRIVATE
-    "${TINYXML_DIR}/TinyXML.cpp"
-)
-
-add_library(HTTPClient "")
-  target_sources(HTTPClient
-  PRIVATE
-    "${MOCK_ARDUINO_DIR}/HTTPClient.cpp"
-    "${MOCK_ARDUINO_DIR}/HTTPClient.h"
-)
-
-add_library(Adafruit_EPD "")
-  target_sources(Adafruit_EPD
-  PRIVATE
-    "${ADAFRUIT_EPD_DIR}/Adafruit_EPD.h"
-    "${MOCK_ARDUINO_DIR}/Adafruit_EPD.cpp"
+    "${tinyxml_SOURCE_DIR}/TinyXML.cpp"
 )
 
 add_library(sparetheair "")
   target_sources(sparetheair
   PRIVATE
-    "${SPARETHEAIR_DIR}/aqi_meter_image.h"
-    "${SPARETHEAIR_DIR}/display.cpp"
-    "${SPARETHEAIR_DIR}/display.h"
-    "${SPARETHEAIR_DIR}/font_base.h"
-    "${SPARETHEAIR_DIR}/font_large.h"
-    "${SPARETHEAIR_DIR}/font_medium.h"
-    "${SPARETHEAIR_DIR}/logo.h"
     "${SPARETHEAIR_DIR}/network.cpp"
     "${SPARETHEAIR_DIR}/network.h"
-    "${SPARETHEAIR_DIR}/size.h"
+    "${SPARETHEAIR_DIR}/parser.cpp"
+    "${SPARETHEAIR_DIR}/parser.h"
+    "${SPARETHEAIR_DIR}/status.cpp"
+    "${SPARETHEAIR_DIR}/status.h"
 )
 target_compile_options(sparetheair
   PRIVATE -Wall -Wextra -pedantic -Werror)
@@ -105,8 +99,6 @@ target_compile_options(sparetheair
 add_executable(unit_tests main.cc)
 target_link_libraries(unit_tests
   sparetheair
-  Adafruit_EPD
-  HTTPClient
   TinyXML
   gtest_main
   Arduino
