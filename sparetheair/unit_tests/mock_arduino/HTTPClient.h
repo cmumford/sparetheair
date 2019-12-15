@@ -1,7 +1,7 @@
 #ifndef MOCK_ARDUINO_HTTPCLIENT_H
 #define MOCK_ARDUINO_HTTPCLIENT_H
 
-#include "String.h"
+#include "Arduino_String.h"
 
 #define HTTP_CODE_OK 200
 

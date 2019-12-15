@@ -69,8 +69,8 @@ include_directories(
 add_library(Arduino "")
   target_sources(Arduino
   PRIVATE
-    "${MOCK_ARDUINO_DIR}/String.cpp"
-    "${MOCK_ARDUINO_DIR}/String.h"
+    "${MOCK_ARDUINO_DIR}/Arduino_String.cpp"
+    "${MOCK_ARDUINO_DIR}/Arduino_String.h"
     "${MOCK_ARDUINO_DIR}/Arduino.h"
     "${MOCK_ARDUINO_DIR}/Print.h"
     "${MOCK_ARDUINO_DIR}/SPI.h"

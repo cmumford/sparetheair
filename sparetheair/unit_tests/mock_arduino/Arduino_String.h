@@ -1,5 +1,5 @@
-#ifndef MOCK_ARDUINO_STRING_H
-#define MOCK_ARDUINO_STRING_H
+#ifndef MOCK_ARDUINO_ARDUINO_STRING_H
+#define MOCK_ARDUINO_ARDUINO_STRING_H
 
 #include <string>
 #include <ostream>
@@ -24,4 +24,4 @@ String operator+(const String& lhs, const String& rhs);
 
 class __FlashStringHelper {};
 
-#endif  // MOCK_ARDUINO_STRING_H
+#endif  // MOCK_ARDUINO_ARDUINO_STRING_H

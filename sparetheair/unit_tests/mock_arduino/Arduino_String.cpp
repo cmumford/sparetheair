@@ -1,4 +1,4 @@
-#include "String.h"
+#include "Arduino_String.h"
 
 // static
 String operator+(const String& lhs, const String& rhs) {

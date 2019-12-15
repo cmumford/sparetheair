@@ -5,7 +5,7 @@
 
 #include <cstdint>
 
-#include "String.h"
+#include "Arduino_String.h"
 
 #define PROGMEM
 
