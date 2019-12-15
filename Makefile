@@ -6,6 +6,12 @@ CLANG_FORMAT=clang-format
 ARDUINO=/Applications/Arduino.app/Contents/MacOS/Arduino
 FONTCONVERT=../Adafruit-GFX-Library/fontconvert/fontconvert
 
+# Arduino default treats warnings as errors, but there is a
+# bug in TinyXML which causes command-line builds to fail.
+# Removing -Wextra (which means -Werror) to allow build to
+# Succeed.
+ARDUINO_FLAGS=--pref compiler.warning_flags.all='-Wall'
+
 .PHONY: default
 default: verify
 
@@ -22,8 +28,8 @@ format:
 
 .PHONY: verify
 verify:
-	${ARDUINO} --verify sparetheair/sparetheair.ino
-	${ARDUINO} --verify sparetheair.ino
+	${ARDUINO} --verify ${ARDUINO_FLAGS} sparetheair/sparetheair.ino
+	${ARDUINO} --verify ${ARDUINO_FLAGS} sparetheair.ino
 
 sparetheair/font_base.h: Makefile
 	${FONTCONVERT} fonts/windows_command_prompt.ttf 11 > sparetheair/font_base.h
