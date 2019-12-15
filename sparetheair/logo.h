@@ -1,7 +1,7 @@
 #ifndef SPARETHEAIR_LOGO_H_
 #define SPARETHEAIR_LOGO_H_
 
-#include <cstdint>
+#include <stdint.h>
 
 #include "size.h"
 

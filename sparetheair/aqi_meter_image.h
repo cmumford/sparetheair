@@ -1,7 +1,7 @@
 #ifndef SPARETHEAIR_AQI_METER_IMAGE_H_
 #define SPARETHEAIR_AQI_METER_IMAGE_H_
 
-#include <cstdint>
+#include <stdint.h>
 
 #include "size.h"
 
