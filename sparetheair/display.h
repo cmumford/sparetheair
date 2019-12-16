@@ -6,6 +6,7 @@
 
 #include "Adafruit_EPD.h"
 #include "network.h"
+#include "parser.h"
 
 namespace spare_the_air {
 
@@ -34,6 +35,7 @@ class Display {
 
   bool display_begun_;
   Adafruit_IL91874 display_;
+  Network network_;
 };
 
 }  // namespace spare_the_air

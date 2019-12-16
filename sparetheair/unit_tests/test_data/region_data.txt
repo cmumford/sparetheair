@@ -1,0 +1,6 @@
+﻿AQI and Pollutant Forecast for Friday by district.
+North Counties - AQI: 55, Pollutant: PM2.5.
+Coast and Central Bay - AQI: 57, Pollutant: PM2.5.
+Eastern District - AQI: 53, Pollutant: PM2.5
+South and Central Bay - AQI: 50, Pollutant: PM2.5
+Santa Clara Valley - AQI: 55, Pollutant: PM2.6

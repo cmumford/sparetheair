@@ -8,6 +8,10 @@
 #include "sparetheair/display.h"
 #include "sparetheair/network.cpp"
 #include "sparetheair/network.h"
+#include "sparetheair/parser.cpp"
+#include "sparetheair/parser.h"
+#include "sparetheair/status.cpp"
+#include "sparetheair/status.h"
 
 using spare_the_air::Display;
 using spare_the_air::Network;
@@ -71,7 +75,8 @@ int FetchStatus() {
     return err;
   }
   digitalWrite(kLEDPin, HIGH);
-  err = Network::Fetch();
+  Network network;
+  err = network.Fetch();
   DisconnectWiFi();
   DrawStatus(err);
   Serial.println("Successfully refreshed status");

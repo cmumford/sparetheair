@@ -46,8 +46,7 @@ constexpr const int kForecastWidth = kEPaperSize.width / 3;
 
 // There are 3 forecast sections so 2 dividers between them.
 constexpr const int kDividers[kNumStatusDays - 1] = {
-    kEPaperSize.width * 1 / 3,
-    kEPaperSize.width * 2 / 3,
+    kEPaperSize.width * 1 / 3, kEPaperSize.width * 2 / 3,
 };
 
 constexpr const uint16_t kWhite = EPD_WHITE;
@@ -109,7 +108,7 @@ Size GetCharSize(const GFXfont& font, char ch) {
 
 int StringWidth(const GFXfont& font, const String& str) {
   int width = 0;
-  for (int i = 0; i < str.length(); i++) {
+  for (size_t i = 0; i < str.length(); i++) {
     const GFXglyph* glyph = GetGlyph(font, str[i]);
     if (glyph)
       width += glyph->xAdvance;
@@ -165,7 +164,7 @@ void Display::Draw() {
   display_.clearBuffer();
 
   DrawLogo();
-  DrawTodayEntry(Network::status(0));
+  DrawTodayEntry(network_.status(0));
   DrawForecastLines();
   DrawForecasts();
 
@@ -247,7 +246,7 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
 
   const String aqi_str = status.aqi_val != -1
                              ? String(status.aqi_val)
-                             : Network::AQICategoryAbbrev(status.aqi_category);
+                             : Parser::AQICategoryAbbrev(status.aqi_category);
   const GFXfont& kAQIFont = aqi_str.length() > 2 ? kMediumFont : kLargeFont;
 
   const Rectangle aqi_bounds(
@@ -271,7 +270,7 @@ void Display::DrawForecast(const Status& status, const Rectangle& bounds) {
 void Display::DrawForecasts() {
   // Start at idx=1 because 0 is "today".
   for (int i = 1; i < kNumStatusDays; i++)
-    DrawForecast(Network::status(i), kForecastBounds[i - 1]);
+    DrawForecast(network_.status(i), kForecastBounds[i - 1]);
 }
 
 void Display::DrawArrow(const Point& tip, uint8_t color) {

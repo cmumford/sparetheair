@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Air Alerts for the San Francisco Bay Area</title>
+    <link>http://www.sparetheair.org/</link>
+    <description>Spare the Air Alert Status</description>
+    <language>en</language>
+    <lastBuildDate>Saturday, November 23, 2019 11:42</lastBuildDate>
+    <item>
+      <title>Spare the Air Status for Saturday, November 23, 2019</title>
+      <date>Saturday, November 23, 2019</date>
+      <description>Alert In Effect</description>
+    </item>
+  </channel>
+</rss>
