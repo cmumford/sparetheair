@@ -48,4 +48,6 @@ before_script:
 
 script:
    - cd sparetheair/unit_tests/build && ./unit_tests && cd ../../..
+# TinyXML has a *.ino file in it which interferes with out build. Delete it.
+   - rm -rf sparetheair/unit_tests/build
    - build_main_platforms
