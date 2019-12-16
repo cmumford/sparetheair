@@ -71,7 +71,8 @@ int FetchStatus() {
     return err;
   }
   digitalWrite(kLEDPin, HIGH);
-  err = Network::Fetch();
+  Network network;
+  err = network.Fetch();
   DisconnectWiFi();
   DrawStatus(err);
   Serial.println("Successfully refreshed status");
