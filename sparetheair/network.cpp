@@ -16,9 +16,9 @@ struct HttpFetchResult {
   String response;
 };
 
-constexpr const char kAlertUrl[] = "http://www.baaqmd.gov/Feeds/AlertRSS.aspx";
+constexpr const char kAlertUrl[] = "https://www.baaqmd.gov/Feeds/AlertRSS.aspx";
 constexpr const char kForecastUrl[] =
-    "http://www.baaqmd.gov/Feeds/AirForecastRSS.aspx";
+    "https://www.baaqmd.gov/Feeds/AirForecastRSS.aspx";
 
 HttpFetchResult DoHTTPGet(const char* url) {
   HttpFetchResult result;
